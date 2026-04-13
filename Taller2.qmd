@@ -2861,4 +2861,3 @@ iv)
 Monotonicidad: $D_i(1)\geq D_i(0)$ $\forall i$ o que $D_i(1)\leq D_i(0)$ $\forall i$ que estipula que el efecto del instrumento debe tener la misma dirección, no debe haber individuos que reaccionen de manera contraria al instrumento. Es decir, no debe haber individuos que vean la TV de Kuran cuando no tienen acceso a la señal y que no la vean cuando sí tienen acceso. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión y no debería haber casos en los que el acceso disminuya la probabilidad de ver la TV de Kuran.
 
 
-iv) 

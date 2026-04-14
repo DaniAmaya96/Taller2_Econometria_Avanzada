@@ -3442,6 +3442,7 @@ window.Quarto = {
   <li><a href="#punto-1-2" id="toc-punto-1-2" class="nav-link" data-scroll-target="#punto-1-2">Punto 1</a></li>
   <li><a href="#punto-2-2" id="toc-punto-2-2" class="nav-link" data-scroll-target="#punto-2-2">Punto 2</a></li>
   <li><a href="#punto-3-2" id="toc-punto-3-2" class="nav-link" data-scroll-target="#punto-3-2">Punto 3</a></li>
+  <li><a href="#punto-4-2" id="toc-punto-4-2" class="nav-link" data-scroll-target="#punto-4-2">Punto 4</a></li>
   </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Taller2.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
@@ -5315,25 +5316,203 @@ Diferencias de Medias
 </ol>
 <p><strong>R/:</strong></p>
 <ol type="a">
-<li>la primera etapa sería:</li>
+<li></li>
+</ol>
+<p><strong>La primera etapa sería:</strong></p>
+<p><span class="math display">\[
+D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}&#39; \theta+ v_i
+\]</span></p>
+<p>De la primera etapa recuperamos el valor predicho de <span class="math inline">\(D_i\)</span>, que es<br>
+<span class="math inline">\(\hat{D_i} = \hat{\pi}_o+\hat{\pi}_1 Z_i +  \mathbf{X_i}&#39;\hat{\theta}\)</span>.</p>
+<p><strong>La segunda etapa sería:</strong></p>
+<p><span class="math display">\[
+Y_i = \alpha + \beta_{IV} \hat{D_i} + \gamma&#39;\mathbf{X_i} + \eta_i
+\]</span></p>
+<p>donde <span class="math inline">\(\beta_{IV}\)</span> es el parámetro que captura el efecto causal de interés.</p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<p>Para que la estrategia de IV sea válida bajo el marco LATE se deben cumplir los siguientes supuestos:</p>
+<ol type="i">
+<li><p><strong>Independencia:</strong><br>
+<span class="math inline">\(Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i\)</span> en nuestro caso, como sabemos que hay diferencias en términos de región, por lo tanto se debe cumplir independencia condicional:<br>
+<span class="math inline">\(Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i | \mathbf{X_i}\)</span>.<br>
+Este supuesto estipula que el instrumento debe ser tan bueno como si fuera aleatorio, es decir, que no debe haber factores no observables que estén correlacionados con el instrumento y que a su vez afecten el resultado. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran está determinado por la geografía y no por características del hogar cuando se condiciona por la pertenencia o no a zona urbana.</p></li>
+<li><p><strong>Relevancia:</strong> <span class="math inline">\(P(D_i=1|Z_i=1)\neq P(D_i=1|Z_i=0)\)</span> o también se puede notar <span class="math inline">\(E[D_i(1) - D_i(0)]\neq 0\)</span>, lo que estipula que el instrumento debe tener un efecto sobre el tratamiento, es decir, que el acceso a la señal de Kuran debe aumentar la probabilidad de ver dicha televisión. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión. De hecho, al revisar nuestra tabla de balance es notorio que cuando <span class="math inline">\((Z=0)\)</span> un 47% de los hogares reporta ver la TV de Kuran, mientras que cuando <span class="math inline">\((Z=1)\)</span> el 90% de los hogares reporta ver dicha televisión, lo que nos da indicios de que el instrumento es relevante.</p></li>
+<li><p><strong>Exclusión restricción:</strong> <span class="math inline">\(Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)\)</span><br>
+<span class="math inline">\(\forall D\in(0,1)\)</span>, lo que estipula que el resultado solo es un resultado de <span class="math inline">\(D\)</span>, es decir, que el instrumento <span class="math inline">\(Z\)</span> solo afecta el resultado a través del tratamiento, lo que también puede ser visto como <span class="math inline">\(E[Z_i\eta_i]=0\)</span>. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran no debería afectar el apoyo al régimen por ningún otro canal que no sea a través de la exposición a los contenidos de dicha señal.</p></li>
+<li><p><strong>Monotonicidad:</strong> <span class="math inline">\(D_i(1)\geq D_i(0)\)</span> <span class="math inline">\(\forall i\)</span> o que <span class="math inline">\(D_i(1)\leq D_i(0)\)</span> <span class="math inline">\(\forall i\)</span>, lo que estipula que el efecto del instrumento debe tener la misma dirección; no debe haber individuos que reaccionen de manera contraria al instrumento. Es decir, no debe haber individuos que vean la TV de Kuran cuando no tienen acceso a la señal y que no la vean cuando sí tienen acceso. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión y no debería haber casos en los que el acceso disminuya la probabilidad de ver la TV de Kuran.</p></li>
+<li><p>Para ver los distintos tipos de grupos que pueden surgir según la relación entre el instrumento y el tratamiento, podemos partir de la definición de los siguientes resultados potenciales:</p></li>
+</ol>
+<p><span class="math display">\[
+Di =
+\begin{cases}
+D_i(1) &amp; \text{si } Z = 1  \\
+D_i(0) &amp; \text{si } Z = 0 \\
+\end{cases}
+\]</span></p>
+<p>Sabemos que solo observamos:</p>
+<p><span class="math display">\[
+D_i=D_i(0)+\underbrace{[D_i(1)-D_i(0)]}_{\phi_i}Z_i
+\]</span></p>
+<p>Donde <span class="math inline">\(\phi_i\)</span> es el efecto causal individual del instrumento sobre la probabilidad de tomar el tratamiento. Entonces, si evaluamos dos posibles valores de <span class="math inline">\(D_i(z)\)</span>:</p>
+<p>De esta manera tenemos los siguientes grupos:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Grupo</th>
+<th style="text-align: center;"><span class="math inline">\(D_i(1)\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(D_i(0)\)</span></th>
+<th style="text-align: left;">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Compliers</strong></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">Ven la TV de Kuran solo con acceso</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Never-takers</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">No ven la TV de Kuran aunque tengan acceso</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Always-takers</strong></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Ven la TV de Kuran incluso sin acceso</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Defiers</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Hacen lo opuesto al instrumento</td>
+</tr>
+</tbody>
+</table>
+<p>El subgrupo para el cual se estima el efecto causal de interés es el grupo de los compliers, es decir, aquellos individuos que ven la TV de Kuran solo cuando tienen acceso a la señal. Veamos matemáticamente por qué el efecto que recuperamos es solo sobre los compliers:</p>
+<p>Partamos de que nuestra primera etapa es:</p>
+<p><span class="math display">\[
+D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}&#39; \theta+ v_i
+\]</span></p>
+<p>Nuestra ecuación estructural es:</p>
+<p><span class="math display">\[
+Y_i = \alpha + \beta D_i + \gamma&#39;\mathbf{X_i} + u_i
+\]</span></p>
+<p>Si reemplazamos la primera etapa en la estructural:</p>
+<p><span class="math display">\[
+Y_i = \alpha + \beta_{IV}  (\pi_o+ \pi_1 Z_i + \mathbf{X_i}&#39; \theta+ v_i)+ \gamma&#39;\mathbf{X_i} + u_i
+\]</span></p>
+<p>De acá tenemos:</p>
+<p><span class="math display">\[
+Y_i =
+\underbrace{(\alpha + \beta_{IV}\pi_0)}_{\delta_0}
++
+\underbrace{(\beta_{IV}\pi_1)}_{\delta_1} Z_i
++
+\underbrace{(\beta_{IV}\theta + \gamma)&#39;}_{\rho&#39;} X_i
++
+\underbrace{(\beta_{IV} v_i + u_i)}_{\epsilon_i}
+\]</span></p>
+<p>Si de nuestra forma reducida (llamada así por:) tomamos el coeficiente de <span class="math inline">\(Z_i\)</span>, tenemos:</p>
+<p><span class="math display">\[
+\delta_1 = \beta_{IV}\pi_1
+\]</span></p>
+<p>Por tanto:</p>
+<p><span class="math display">\[
+\beta_{IV} = \frac{\delta_1}{\pi_1}
+\]</span></p>
+<p>Donde <span class="math inline">\(\delta_1\)</span> es el efecto del instrumento sobre el resultado y <span class="math inline">\(\pi_1\)</span> es el efecto del instrumento sobre el tratamiento.</p>
+<p>Si reemplazamos esto por notación de resultados potenciales, tenemos el estimador de Wald:</p>
+<p><span class="math display">\[
+\beta_{IV} = \frac{E[Y_i|Z_i=1] - E[Y_i|Z_i=0]}{E[D_i|Z_i=1]-E[D_i|Z_i=0]}
+\]</span></p>
+<p>Por restricción de exclusión sabemos que <span class="math inline">\(Y_i(D_i, Z_i)=Y_i(D_i)\)</span>, tenemos en nuestro numerador que:</p>
+<p><span class="math display">\[
+\beta_{IV} = \frac{E[Y_i(D_i(1)) - Y_i(D_i(0))]}{E[D_i|Z_i=1]-E[D_i|Z_i=0]}
+\]</span></p>
+<p>Ahora aplicamos Ley de Expectativas Iteradas en el numerador, teniendo en cuenta los cuatro grupos que identificamos:</p>
+<p><span class="math display">\[
+\beta_{IV} =
+\frac{
+\begin{aligned}
+&amp;E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers}) \\
++ \;&amp;E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Never-takers} \big] \cdot P(\text{Never-takers}) \\
++ \;&amp;E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Always-takers} \big] \cdot P(\text{Always-takers}) \\
++ \;&amp;E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Defiers} \big] \cdot P(\text{Defiers})
+\end{aligned}
+}{
+E[D_i \mid Z_i = 1] - E[D_i \mid Z_i = 0]
+}
+\]</span></p>
+<p>Ahora veamos caso por caso:</p>
+<ul>
+<li><p><strong>Compliers</strong>:<br>
+<span class="math inline">\(D_i(1)=1\)</span> y <span class="math inline">\(D_i(0)=0\)</span><br>
+<span class="math inline">\(\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(1) - Y_i(0)\)</span></p></li>
+<li><p><strong>Never-takers</strong>:<br>
+<span class="math inline">\(D_i(1)=0\)</span> y <span class="math inline">\(D_i(0)=0\)</span><br>
+<span class="math inline">\(\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(0) - Y_i(0) = 0\)</span></p></li>
+<li><p><strong>Always-takers</strong>:<br>
+<span class="math inline">\(D_i(1)=1\)</span> y <span class="math inline">\(D_i(0)=1\)</span><br>
+<span class="math inline">\(\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(1) - Y_i(1) = 0\)</span></p></li>
+<li><p><strong>Defiers</strong>:<br>
+<span class="math inline">\(D_i(1)=0\)</span> y <span class="math inline">\(D_i(0)=1\)</span><br>
+<span class="math inline">\(\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(0) - Y_i(1)\)</span></p></li>
+</ul>
+<p>Entonces tenemos:</p>
+<p><span class="math display">\[
+\beta_{IV} =
+\frac{
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers})
++
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Defiers} \big] \cdot P(\text{Defiers})
+}{
+E[D_i \mid Z_i = 1] - E[D_i \mid Z_i = 0]
+}
+\]</span></p>
+<p>Si se cumple monotonicidad, entonces <span class="math inline">\(P(\text{Defiers})=0\)</span> y por tanto:</p>
+<p><span class="math display">\[
+\beta_{IV} =\frac{
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers})
+}{E[D_i \mid Z_i = 1] - E[D_i \mid Z_i = 0]
+}
+\]</span></p>
+<p>Evaluando el denominador de manera análoga, dado el supuesto de independencia de los resultados potenciales <span class="math inline">\(D_i(z) \perp Z_i\)</span>, tenemos que el denominador es equivalente a <span class="math inline">\(E[D_i(1) - D_i(0)]\)</span>. Mediante la Ley de Expectativas Iteradas, esta diferencia se anula para los <em>Always-takers</em> y <em>Never-takers</em>. Queda solo el efecto sobre los <em>Compliers</em> y <em>Defiers</em>. Como aplicamos monotonicidad, <span class="math inline">\(P(\text{Defiers}) = 0\)</span>, tenemos que la esperanza total es simplemente la proporción de compliers: <span class="math inline">\(P(\text{Compliers})\)</span>, tal que:</p>
+<p><span class="math display">\[
+\beta_{IV} =\frac{
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers})
+}{P(\text{Compliers})}
+\]</span></p>
+<p>Por lo tanto, tenemos que nuestro estimador solo nos recupera el efecto para los Compliers, lo que se define como un LATE:</p>
+<p><span class="math display">\[
+\beta_{IV} = E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big]
+\]</span></p>
+<p>En el caso de Valmoria, el efecto causal que recuperaremos es entonces el efecto de ver la TV de Kuran en el apoyo al régimen para aquellos individuos que efectivamente vieron la TV de Kuran por el hecho de tener acceso a la señal, es decir, para los compliers.</p>
+</section>
+<section id="punto-4-2" class="level2">
+<h2 class="anchored" data-anchor-id="punto-4-2">Punto 4</h2>
+<p>Estime el efecto de la exposición a la televisión extranjera sobre el apoyo al régimen utilizando la estrategia de variables instrumentales.</p>
+<ol type="a">
+<li><p>Comiencen estimando la <strong>primera etapa</strong>, donde la variable dependiente es <span class="math inline">\(D_i\)</span> (ver TV extranjera) y el instrumento es <span class="math inline">\(Z_i\)</span> (acceso a la señal), incluyendo controles demográficos. Reporte el coeficiente de <span class="math inline">\(Z_i\)</span> e interprete su magnitud y significancia. ¿Qué puede decir sobre la relevancia del instrumento?</p></li>
+<li><p>Compare el efecto estimado por <strong>MCO</strong> con el de <strong>2SLS</strong>. Muestre los resultados de ambos estimadores en una tabla e interprete cómo cambia la magnitud y el signo del coeficiente al pasar de MCO a IV.</p></li>
+</ol>
+<p><strong>R/:</strong></p>
+<ol type="a">
+<li>Recordemos que neustra primera etapa sería:</li>
 </ol>
 <p><span class="math display">\[
 D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}&#39; \theta+ v_i
 \]</span></p>
-<p>De la primera etapa recuperamos el valor predicho de <span class="math inline">\(D_i\)</span> que es <span class="math inline">\(\hat{D_i} = \hat{\pi}_o+\hat{\pi}_1 Z_i +  \mathbf{X_i}&#39;\hat{\theta}\)</span>.</p>
-<p>la segunda etapa sería: <span class="math display">\[
-Y_i = \alpha + \beta_{IV} \hat{D_i} + \gamma&#39;\mathbf{X_i} + \eta_i
-\]</span> donde <span class="math inline">\(\beta_{IV}\)</span> es el parámetro que captura el efecto causal de interés.</p>
-<ol start="2" type="a">
-<li></li>
-</ol>
-<p>Para que la estrategía de IV sea valida bajo el marco LATE se deben cumplir los siguientes supuestos:</p>
-<ol type="i">
-<li><p>Independencia: <span class="math inline">\(Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i\)</span> en nuestro casos como sabemos que hay diferencias en terminos de region se debe cumplir que <span class="math inline">\(Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i, \mathbf{X_i}\)</span>. Este supuesto estipula que el instrumento debe ser tan bueno como aleatorio, es decir, que no debe haber factores no observables que estén correlacionados con el instrumento y que a su vez afecten el resultado. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran está determinado por la geografía y no por características individuales o del hogar.</p></li>
-<li><p>Relevancia: <span class="math inline">\(P(D_i=1|Z_i=1)\neq P(D_i=1|Z_i=0)\)</span> o tambien se puede notar <span class="math inline">\(E[D_i(1) - D_i(0)]\neq 0\)</span> que estipula que el instrumento debe tener un efecto sobre el tratamiento, es decir, que el acceso a la señal de Kuran debe aumentar la probabilidad de ver dicha televisión. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión. De hecho al revisar nuestra tabla de balance es notorio que cuando <span class="math inline">\((Z=0)\)</span> un 47% de los hogares reporta ver la TV de Kuran mientras que cuando <span class="math inline">\((Z=1)\)</span> el 90% de los hogares reporta ver dicha televisión, lo que nos da indicios de que el instrumento es relevante.</p></li>
-<li><p>Exclusión restricción: <span class="math inline">\(Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)\)</span> <span class="math inline">\(\forall D\in(0,1)\)</span> que estipula que el resultado solo es un resuldao <span class="math inline">\(D\)</span> es decir que el instrumento <span class="math inline">\(Z\)</span> solo afecta el resultado a través del tratamiento lo que también puede ser visto como <span class="math inline">\(E[Z_i\eta_i]=0\)</span>. En el caso de valmoría este supuesto es plausible dado que el acceso a la señal de Kuran no debería afectar el apoyo al régimen por ningún otro canal que no sea a través de la exposición a los contenidos de dicha señal.</p></li>
-<li><p>Monotonicidad: <span class="math inline">\(D_i(1)\geq D_i(0)\)</span> <span class="math inline">\(\forall i\)</span> o que <span class="math inline">\(D_i(1)\leq D_i(0)\)</span> <span class="math inline">\(\forall i\)</span> que estipula que el efecto del instrumento debe tener la misma dirección, no debe haber individuos que reaccionen de manera contraria al instrumento. Es decir, no debe haber individuos que vean la TV de Kuran cuando no tienen acceso a la señal y que no la vean cuando sí tienen acceso. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión y no debería haber casos en los que el acceso disminuya la probabilidad de ver la TV de Kuran.</p></li>
-</ol>
 </section>
 </section>
 

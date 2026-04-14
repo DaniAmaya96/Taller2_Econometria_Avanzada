@@ -2849,7 +2849,9 @@ contenidos alternativos de programas de televisión.
 
 **R/:**
 
-a)  La primera etapa sería:
+a)  
+
+**La primera etapa sería:**
 
 $$
 D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
@@ -2858,7 +2860,7 @@ $$
 De la primera etapa recuperamos el valor predicho de $D_i$, que es\
 $\hat{D_i} = \hat{\pi}_o+\hat{\pi}_1 Z_i +  \mathbf{X_i}'\hat{\theta}$.
 
-La segunda etapa sería:
+**La segunda etapa sería:**
 
 $$
 Y_i = \alpha + \beta_{IV} \hat{D_i} + \gamma'\mathbf{X_i} + \eta_i
@@ -2917,11 +2919,9 @@ iv) **Monotonicidad:** $D_i(1)\geq D_i(0)$ $\forall i$ o que
     debería haber casos en los que el acceso disminuya la probabilidad
     de ver la TV de Kuran.
 
-v)  
-
-Para ver los distintos tipos de grupos que pueden surgir según la
-relación entre el instrumento y el tratamiento, podemos partir de la
-definición de los siguientes resultados potenciales:
+v)  Para ver los distintos tipos de grupos que pueden surgir según la
+    relación entre el instrumento y el tratamiento, podemos partir de la
+    definición de los siguientes resultados potenciales:
 
 $$
 Di =
@@ -2944,7 +2944,7 @@ posibles valores de $D_i(z)$:
 De esta manera tenemos los siguientes grupos:
 
 | Grupo | $D_i(1)$ | $D_i(0)$ | Descripción |
-|:------------|:-----------:|:-----------:|:---------------------------------|
+|:---|:--:|:--:|:---|
 | **Compliers** | 1 | 0 | Ven la TV de Kuran solo con acceso |
 | **Never-takers** | 0 | 0 | No ven la TV de Kuran aunque tengan acceso |
 | **Always-takers** | 1 | 1 | Ven la TV de Kuran incluso sin acceso |
@@ -3117,15 +3117,15 @@ apoyo al régimen utilizando la estrategia de variables instrumentales.
 
 **R/:**
 
-a) Recordemos que neustra primera etapa sería: 
+a)  Recordemos que neustra primera etapa sería:
 
 $$
 D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
 $$
+
 ```{r}
  
 
 
 
 ```
-

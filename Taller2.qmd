@@ -2782,22 +2782,30 @@ de estimación debe ser mínimos cuadrados ordinarios (MCO).
 
 $$Y_i = \alpha + \beta D_i + \gamma' \mathbf{X_i} + u_i$$
 
-donde $Y_i$ es apoyo al régimen, $D_i$ es la variable de exposición
-a la TV de Kuran y $X_i$ son los controles sociodemográficos. ¿Cómo se
-interpreta $\beta$ en este modelo? ¿Creen que este estimador
-identifica un efecto causal? Justifiquen. (Máx. 150 palabras)
+donde $Y_i$ es apoyo al régimen, $D_i$ es la variable de exposición a la
+TV de Kuran y $X_i$ son los controles sociodemográficos. ¿Cómo se
+interpreta $\beta$ en este modelo? ¿Creen que este estimador identifica
+un efecto causal? Justifiquen. (Máx. 150 palabras)
 
-**R/:** Aunque de manera ingenua se podría pensar que $\beta$ es el efecto causa de ver la TV de Kuran en el apoyo al regimen, este estimador no identifica un efecto causal, representa es la diferencia promedio en la probabilidad de apoyar al régimen entre quienes ven la TV de Kuran $(D_i=1)$ y  quiene no $(D_i=0)$ manteniendo constante el vector de controles $X_i$. En respuesta a la segunda pregunta **NO**, el estimador no recupera el efecto causal dado que el tratamiento $D_i$ definido como ver la TV de Kuran es endogeno, toda vez que puede haber características no observables como rebeldía o interés que estén correlacionados con el apoyo al régimen y en consecuencia que se encuentren en $u_i$ de tal manera que $E[D_iu_i]\neq 0$. 
+**R/:** Aunque de manera ingenua se podría pensar que $\beta$ es el
+efecto causa de ver la TV de Kuran en el apoyo al regimen, este
+estimador no identifica un efecto causal, representa es la diferencia
+promedio en la probabilidad de apoyar al régimen entre quienes ven la TV
+de Kuran $(D_i=1)$ y quiene no $(D_i=0)$ manteniendo constante el vector
+de controles $X_i$. En respuesta a la segunda pregunta **NO**, el
+estimador no recupera el efecto causal dado que el tratamiento $D_i$
+definido como ver la TV de Kuran es endogeno, toda vez que puede haber
+características no observables como rebeldía o interés que estén
+correlacionados con el apoyo al régimen y en consecuencia que se
+encuentren en $u_i$ de tal manera que $E[D_iu_i]\neq 0$.
 
 **Anexo matemático:**
 
-Si aplicamos FWL $D_i= \mathbf{X_i}' \pi+ v_i$
-el estimador de MCO es:
+Si aplicamos FWL $D_i= \mathbf{X_i}' \pi+ v_i$ el estimador de MCO es:
 
 $$
 \beta = \frac{Cov(Y_i, \tilde{D_i})}{Var(\tilde{D_i})}
-$$
-$$
+$$ $$
 \beta = \frac{Cov(\alpha + \beta D_i + \gamma'X_i + u_i, \tilde{D_i})}{Var(\tilde{D_i})}
 $$
 
@@ -2813,51 +2821,311 @@ $$
 \beta = \beta + \underbrace{\frac{Cov(u_i, \tilde{D_i})}{Var(\tilde{D_i})}}_{\text{Sesgo Endogenidad}}
 $$
 
-cómo $Cov(u_i, \tilde{D_i})\neq 0$ entonces el estimador de MCO es sesgado y no recupera el efecto Causal. 
+cómo $Cov(u_i, \tilde{D_i})\neq 0$ entonces el estimador de MCO es
+sesgado y no recupera el efecto Causal.
 
-## Punto 3 
+## Punto 3
 
-Ante las limitaciones del estimador por MCO, ustedes consideran usar la disponibilidad de señal como un instrumento para la exposición a contenidos alternativos de programas de televisión.
+Ante las limitaciones del estimador por MCO, ustedes consideran usar la
+disponibilidad de señal como un instrumento para la exposición a
+contenidos alternativos de programas de televisión.
 
-(a) Escriban las ecuaciones de primera y segunda etapa al usar $Z_i$ (acceso a señal) como instrumento de $D_i$. Indiquen de manera clara qué parámetro captura el efecto causal de interés.
+(a) Escriban las ecuaciones de primera y segunda etapa al usar $Z_i$
+    (acceso a señal) como instrumento de $D_i$. Indiquen de manera clara
+    qué parámetro captura el efecto causal de interés.
 
-(b) Bajo el marco de LATE, enumeren y expliquen los supuestos necesarios para que la estrategia de IV sea válida. Evalúen críticamente la plausibilidad de cada uno de estos supuestos en el caso de Valmoria.
+(b) Bajo el marco de LATE, enumeren y expliquen los supuestos necesarios
+    para que la estrategia de IV sea válida. Evalúen críticamente la
+    plausibilidad de cada uno de estos supuestos en el caso de Valmoria.
 
-(c) Definan los distintos tipos de grupos que pueden surgir en este contexto según la relación entre el instrumento y el tratamiento. A partir de su caracterización, indiquen cuál es el subgrupo para el cual se estima el efecto causal de interés.
+(c) Definan los distintos tipos de grupos que pueden surgir en este
+    contexto según la relación entre el instrumento y el tratamiento. A
+    partir de su caracterización, indiquen cuál es el subgrupo para el
+    cual se estima el efecto causal de interés.
 
-(d) Discutan las diferencias entre un efecto ATE, ATT y LATE, aplicados al contexto del ejercicio: ¿bajo qué condiciones estos tres efectos son iguales?
+(d) Discutan las diferencias entre un efecto ATE, ATT y LATE, aplicados
+    al contexto del ejercicio: ¿bajo qué condiciones estos tres efectos
+    son iguales?
 
 **R/:**
 
-a) 
-la primera etapa sería: 
+a)  La primera etapa sería:
 
 $$
 D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
 $$
 
-De la primera etapa recuperamos el valor predicho de $D_i$ que es $\hat{D_i} = \hat{\pi}_o+\hat{\pi}_1 Z_i +  \mathbf{X_i}'\hat{\theta}$.
+De la primera etapa recuperamos el valor predicho de $D_i$, que es\
+$\hat{D_i} = \hat{\pi}_o+\hat{\pi}_1 Z_i +  \mathbf{X_i}'\hat{\theta}$.
 
-la segunda etapa sería: 
+La segunda etapa sería:
+
 $$
 Y_i = \alpha + \beta_{IV} \hat{D_i} + \gamma'\mathbf{X_i} + \eta_i
 $$
-donde $\beta_{IV}$ es el parámetro que captura el efecto causal de interés. 
 
-b) 
+donde $\beta_{IV}$ es el parámetro que captura el efecto causal de
+interés.
 
-Para que la estrategía de IV sea valida bajo el marco LATE se deben cumplir los siguientes supuestos: 
+b)  
 
-i) 
-Independencia: $Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i$ en nuestro casos como sabemos que hay diferencias en terminos de region se debe cumplir que  $Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i, \mathbf{X_i}$. Este supuesto estipula que el instrumento debe ser tan bueno como aleatorio, es decir, que no debe haber factores no observables que estén correlacionados con el instrumento y que a su vez afecten el resultado. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran está determinado por la geografía y no por características individuales o del hogar.
+Para que la estrategia de IV sea válida bajo el marco LATE se deben
+cumplir los siguientes supuestos:
 
-ii)
-Relevancia: $P(D_i=1|Z_i=1)\neq P(D_i=1|Z_i=0)$ o tambien se puede notar $E[D_i(1) - D_i(0)]\neq 0$ que estipula que el instrumento debe tener un efecto sobre el tratamiento, es decir, que el acceso a la señal de Kuran debe aumentar la probabilidad de ver dicha televisión. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión. De hecho al revisar nuestra tabla de balance es notorio que cuando $(Z=0)$ un 47% de los hogares reporta ver la TV de Kuran mientras que cuando $(Z=1)$ el 90% de los hogares reporta ver dicha televisión, lo que nos da indicios de que el instrumento es relevante.
+i)  **Independencia:**\
+    $Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i$ en
+    nuestro caso, como sabemos que hay diferencias en términos de
+    región, por lo tanto se debe cumplir independencia condicional:\
+    $Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i | \mathbf{X_i}$.\
+    Este supuesto estipula que el instrumento debe ser tan bueno como si
+    fuera aleatorio, es decir, que no debe haber factores no observables
+    que estén correlacionados con el instrumento y que a su vez afecten
+    el resultado. En el caso de Valmoria este supuesto es plausible dado
+    que el acceso a la señal de Kuran está determinado por la geografía
+    y no por características del hogar cuando se condiciona por la
+    pertenencia o no a zona urbana.
 
-iii)
-Exclusión restricción: $Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)$ $\forall D\in(0,1)$ que estipula que el resultado solo es un resuldao $D$ es decir que el instrumento $Z$ solo afecta el resultado a través del tratamiento lo que también puede ser visto como $E[Z_i\eta_i]=0$. En el caso de valmoría este supuesto es plausible dado que el acceso a la señal de Kuran no debería afectar el apoyo al régimen por ningún otro canal que no sea a través de la exposición a los contenidos de dicha señal. 
+ii) **Relevancia:** $P(D_i=1|Z_i=1)\neq P(D_i=1|Z_i=0)$ o también se
+    puede notar $E[D_i(1) - D_i(0)]\neq 0$, lo que estipula que el
+    instrumento debe tener un efecto sobre el tratamiento, es decir, que
+    el acceso a la señal de Kuran debe aumentar la probabilidad de ver
+    dicha televisión. En el caso de Valmoria este supuesto es plausible
+    dado que el acceso a la señal de Kuran debería aumentar la
+    probabilidad de ver dicha televisión. De hecho, al revisar nuestra
+    tabla de balance es notorio que cuando $(Z=0)$ un 47% de los hogares
+    reporta ver la TV de Kuran, mientras que cuando $(Z=1)$ el 90% de
+    los hogares reporta ver dicha televisión, lo que nos da indicios de
+    que el instrumento es relevante.
 
-iv)
-Monotonicidad: $D_i(1)\geq D_i(0)$ $\forall i$ o que $D_i(1)\leq D_i(0)$ $\forall i$ que estipula que el efecto del instrumento debe tener la misma dirección, no debe haber individuos que reaccionen de manera contraria al instrumento. Es decir, no debe haber individuos que vean la TV de Kuran cuando no tienen acceso a la señal y que no la vean cuando sí tienen acceso. En el caso de Valmoria este supuesto es plausible dado que el acceso a la señal de Kuran debería aumentar la probabilidad de ver dicha televisión y no debería haber casos en los que el acceso disminuya la probabilidad de ver la TV de Kuran.
+iii) **Exclusión restricción:** $Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)$\
+     $\forall D\in(0,1)$, lo que estipula que el resultado solo es un
+     resultado de $D$, es decir, que el instrumento $Z$ solo afecta el
+     resultado a través del tratamiento, lo que también puede ser visto
+     como $E[Z_i\eta_i]=0$. En el caso de Valmoria este supuesto es
+     plausible dado que el acceso a la señal de Kuran no debería afectar
+     el apoyo al régimen por ningún otro canal que no sea a través de la
+     exposición a los contenidos de dicha señal.
 
+iv) **Monotonicidad:** $D_i(1)\geq D_i(0)$ $\forall i$ o que
+    $D_i(1)\leq D_i(0)$ $\forall i$, lo que estipula que el efecto del
+    instrumento debe tener la misma dirección; no debe haber individuos
+    que reaccionen de manera contraria al instrumento. Es decir, no debe
+    haber individuos que vean la TV de Kuran cuando no tienen acceso a
+    la señal y que no la vean cuando sí tienen acceso. En el caso de
+    Valmoria este supuesto es plausible dado que el acceso a la señal de
+    Kuran debería aumentar la probabilidad de ver dicha televisión y no
+    debería haber casos en los que el acceso disminuya la probabilidad
+    de ver la TV de Kuran.
+
+v)  
+
+Para ver los distintos tipos de grupos que pueden surgir según la
+relación entre el instrumento y el tratamiento, podemos partir de la
+definición de los siguientes resultados potenciales:
+
+$$
+Di =
+\begin{cases}
+D_i(1) & \text{si } Z = 1  \\
+D_i(0) & \text{si } Z = 0 \\
+\end{cases}
+$$
+
+Sabemos que solo observamos:
+
+$$
+D_i=D_i(0)+\underbrace{[D_i(1)-D_i(0)]}_{\phi_i}Z_i
+$$
+
+Donde $\phi_i$ es el efecto causal individual del instrumento sobre la
+probabilidad de tomar el tratamiento. Entonces, si evaluamos dos
+posibles valores de $D_i(z)$:
+
+De esta manera tenemos los siguientes grupos:
+
+| Grupo | $D_i(1)$ | $D_i(0)$ | Descripción |
+|:------------|:-----------:|:-----------:|:---------------------------------|
+| **Compliers** | 1 | 0 | Ven la TV de Kuran solo con acceso |
+| **Never-takers** | 0 | 0 | No ven la TV de Kuran aunque tengan acceso |
+| **Always-takers** | 1 | 1 | Ven la TV de Kuran incluso sin acceso |
+| **Defiers** | 0 | 1 | Hacen lo opuesto al instrumento |
+
+El subgrupo para el cual se estima el efecto causal de interés es el
+grupo de los compliers, es decir, aquellos individuos que ven la TV de
+Kuran solo cuando tienen acceso a la señal. Veamos matemáticamente por
+qué el efecto que recuperamos es solo sobre los compliers:
+
+Partamos de que nuestra primera etapa es:
+
+$$
+D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
+$$
+
+Nuestra ecuación estructural es:
+
+$$
+Y_i = \alpha + \beta D_i + \gamma'\mathbf{X_i} + u_i
+$$
+
+Si reemplazamos la primera etapa en la estructural:
+
+$$
+Y_i = \alpha + \beta_{IV}  (\pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i)+ \gamma'\mathbf{X_i} + u_i
+$$
+
+De acá tenemos:
+
+$$
+Y_i =
+\underbrace{(\alpha + \beta_{IV}\pi_0)}_{\delta_0}
++
+\underbrace{(\beta_{IV}\pi_1)}_{\delta_1} Z_i
++
+\underbrace{(\beta_{IV}\theta + \gamma)'}_{\rho'} X_i
++
+\underbrace{(\beta_{IV} v_i + u_i)}_{\epsilon_i}
+$$
+
+Si de nuestra forma reducida (llamada así por:) tomamos el coeficiente
+de $Z_i$, tenemos:
+
+$$
+\delta_1 = \beta_{IV}\pi_1
+$$
+
+Por tanto:
+
+$$
+\beta_{IV} = \frac{\delta_1}{\pi_1}
+$$
+
+Donde $\delta_1$ es el efecto del instrumento sobre el resultado y
+$\pi_1$ es el efecto del instrumento sobre el tratamiento.
+
+Si reemplazamos esto por notación de resultados potenciales, tenemos el
+estimador de Wald:
+
+$$
+\beta_{IV} = \frac{E[Y_i|Z_i=1] - E[Y_i|Z_i=0]}{E[D_i|Z_i=1]-E[D_i|Z_i=0]}
+$$
+
+Por restricción de exclusión sabemos que $Y_i(D_i, Z_i)=Y_i(D_i)$,
+tenemos en nuestro numerador que:
+
+$$
+\beta_{IV} = \frac{E[Y_i(D_i(1)) - Y_i(D_i(0))]}{E[D_i|Z_i=1]-E[D_i|Z_i=0]}
+$$
+
+Ahora aplicamos Ley de Expectativas Iteradas en el numerador, teniendo
+en cuenta los cuatro grupos que identificamos:
+
+$$
+\beta_{IV} =
+\frac{
+\begin{aligned}
+&E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers}) \\
++ \;&E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Never-takers} \big] \cdot P(\text{Never-takers}) \\
++ \;&E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Always-takers} \big] \cdot P(\text{Always-takers}) \\
++ \;&E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Defiers} \big] \cdot P(\text{Defiers})
+\end{aligned}
+}{
+E[D_i \mid Z_i = 1] - E[D_i \mid Z_i = 0]
+}
+$$
+
+Ahora veamos caso por caso:
+
+-   **Compliers**:\
+    $D_i(1)=1$ y $D_i(0)=0$\
+    $\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(1) - Y_i(0)$
+
+-   **Never-takers**:\
+    $D_i(1)=0$ y $D_i(0)=0$\
+    $\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(0) - Y_i(0) = 0$
+
+-   **Always-takers**:\
+    $D_i(1)=1$ y $D_i(0)=1$\
+    $\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(1) - Y_i(1) = 0$
+
+-   **Defiers**:\
+    $D_i(1)=0$ y $D_i(0)=1$\
+    $\Rightarrow \; Y_i(D_i(1)) - Y_i(D_i(0)) = Y_i(0) - Y_i(1)$
+
+Entonces tenemos:
+
+$$
+\beta_{IV} =
+\frac{
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers})
++
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Defiers} \big] \cdot P(\text{Defiers})
+}{
+E[D_i \mid Z_i = 1] - E[D_i \mid Z_i = 0]
+}
+$$
+
+Si se cumple monotonicidad, entonces $P(\text{Defiers})=0$ y por tanto:
+
+$$
+\beta_{IV} =\frac{
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers})
+}{E[D_i \mid Z_i = 1] - E[D_i \mid Z_i = 0]
+}
+$$
+
+Evaluando el denominador de manera análoga, dado el supuesto de
+independencia de los resultados potenciales $D_i(z) \perp Z_i$, tenemos
+que el denominador es equivalente a $E[D_i(1) - D_i(0)]$. Mediante la
+Ley de Expectativas Iteradas, esta diferencia se anula para los
+*Always-takers* y *Never-takers*. Queda solo el efecto sobre los
+*Compliers* y *Defiers*. Como aplicamos monotonicidad,
+$P(\text{Defiers}) = 0$, tenemos que la esperanza total es simplemente
+la proporción de compliers: $P(\text{Compliers})$, tal que:
+
+$$
+\beta_{IV} =\frac{
+E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] \cdot P(\text{Compliers})
+}{P(\text{Compliers})}
+$$
+
+Por lo tanto, tenemos que nuestro estimador solo nos recupera el efecto
+para los Compliers, lo que se define como un LATE:
+
+$$
+\beta_{IV} = E\big[Y_i(D_i(1)) - Y_i(D_i(0)) \mid \text{Compliers} \big] 
+$$
+
+En el caso de Valmoria, el efecto causal que recuperaremos es entonces
+el efecto de ver la TV de Kuran en el apoyo al régimen para aquellos
+individuos que efectivamente vieron la TV de Kuran por el hecho de tener
+acceso a la señal, es decir, para los compliers.
+
+## Punto 4
+
+Estime el efecto de la exposición a la televisión extranjera sobre el
+apoyo al régimen utilizando la estrategia de variables instrumentales.
+
+(a) Comiencen estimando la **primera etapa**, donde la variable
+    dependiente es $D_i$ (ver TV extranjera) y el instrumento es $Z_i$
+    (acceso a la señal), incluyendo controles demográficos. Reporte el
+    coeficiente de $Z_i$ e interprete su magnitud y significancia. ¿Qué
+    puede decir sobre la relevancia del instrumento?
+
+(b) Compare el efecto estimado por **MCO** con el de **2SLS**. Muestre
+    los resultados de ambos estimadores en una tabla e interprete cómo
+    cambia la magnitud y el signo del coeficiente al pasar de MCO a IV.
+
+**R/:**
+
+a) Recordemos que neustra primera etapa sería: 
+
+$$
+D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
+$$
+```{r}
+ 
+
+
+
+```
 

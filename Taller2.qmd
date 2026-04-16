@@ -321,36 +321,59 @@ tabla_descriptiva_global %>%
   )
 ```
 
-```{r}
-#| echo: false
-# Para la base de datos de niños
-ggplot(ninos, aes(x = d_bnd)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.8) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "red", size = 1.2) + 
-  labs(
-    title = "Densidad de la Población alrededor de la Frontera de la Mita",
-    subtitle = "Muestra a nivel de niños (N = 158,848)",
-    x = "Distancia a la Frontera (d_bnd = 0 es el límite)",
-    y = "Número de Niños (Frecuencia)"
-  ) +
-  theme_minimal() +
-  theme(plot.title = element_text(face = "bold"))
-```
 
 ```{r}
 #| echo: false
-# Para la base de hogares
-ggplot(hogares, aes(x = d_bnd)) +
-  geom_histogram(binwidth = 5, fill = "lightgreen", color = "black", alpha = 0.8) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "red", size = 1.2) + 
-  labs(
-    title = "Densidad de Hogares alrededor de la Frontera de la Mita",
-    subtitle = "Muestra a nivel de hogares (N = 1,478)",
-    x = "Distancia a la Frontera (d_bnd = 0 es el límite)",
-    y = "Número de Hogares (Frecuencia)"
-  ) +
-  theme_minimal() +
-  theme(plot.title = element_text(face = "bold"))
+# Grafica de la distancia ajustada a la frontera
+plot_hist <- function(df, titulo_base) {
+  
+  ggplot(df, aes(x = d_bnd)) +
+    
+    geom_histogram(
+      binwidth = 5,
+      fill = "lightblue",
+      color = "white",
+      alpha = 0.85
+    ) +
+    
+    geom_vline(
+      xintercept = 0,
+      linetype = "dashed",
+      color = "black",
+      linewidth = 0.8
+    ) +
+    
+    labs(
+      title = titulo_base,
+      x = "Distancia ajustada a la frontera (km)",
+      y = "Frecuencia"
+    ) +
+    
+    theme_bw(base_size = 12) +
+    theme(
+      axis.title.x = element_text(size = 9),
+      axis.title.y = element_text(size = 9),
+      plot.title = element_text(size = 11)
+    )
+}
+
+
+p1 <- plot_hist(cuadrantes, "Distribución de Cuadrantes")
+p2 <- plot_hist(distritos, "Distribución de Distritos")
+p3 <- plot_hist(hogares, "Distribución de Hogares")
+p4 <- plot_hist(ninos, "Distribución de Niños")
+
+grafico1 <- ((p1 | p2) /
+            (p3 | p4)) +
+  plot_annotation(
+    title = "Distribución de la distancia ajustada en cada base",
+    subtitle = "Valores negativos: fuera de la mita. Valores positivos: dentro de la mita"
+  )
+
+grafico1
+
+
+
 ```
 
 **Respondiendo a la pregunta sobre el diseño metodológico:**
@@ -436,8 +459,9 @@ tratamiento es la pertenencia a la mita.
 La ecuación empírica del modelo local sería:
 
 $$
-Y_i = \alpha + \tau Mita_i + \beta_1 \phi_i + \beta_2 (Mita_i \cdot r_i) + \epsilon_i
+Y_i = \alpha + \tau Mita_i + \beta_1 r_i + \beta_2 (Mita_i \cdot r_i) + \epsilon_i
 $$
+**Nota: Se podría añadir un vector de controles e incluso usar efectos fijos como lo hizo la autora en el paper original**
 
 donde $r_i$ es la distancia a la frontera de la mita, la cual esta
 centrada en cero $r_0=0$ y por tanto la estimación se define en un ancho
@@ -469,11 +493,11 @@ $$
 donde el efecto del tratamiento condicional a la distancia es:
 
 $$
-\tau(\phi_i) = E[Y_i(1) - Y_i(0) \mid r_i]
+\tau(r_i) = E[Y_i(1) - Y_i(0) \mid r_i]
 $$
 
 Si sacamos valores esperados en torno a la frontera (denotada por
-$\phi_0$) y definimos una distancia $\eta$ a la frontera, la diferencia
+$r_0$) y definimos una distancia $\eta$ a la frontera, la diferencia
 observada entre tratados y controles es:
 
 $$
@@ -483,12 +507,12 @@ $$
 $$
 
 Que si se cumple continuidad, es decir, que los resultados potenciales
-no presentan saltos abruptos en el umbral:
+no presentan saltos abruptos en el umbral en ausencia del tratamiento:
 
 $$
-\lim_{\phi \to r_0^-} E[Y_i(d) \mid \phi_i = r]
+\lim_{ r\to r_0-} E[Y_i(d) \mid r_i = r]
 =
-\lim_{\phi \to r_0^+} E[Y_i(d) \mid \phi_i = r]
+\lim_{r \to r_0^+} E[Y_i(d) \mid r_i = r]
 $$
 
 Entonces, gracias a esta continuidad matemática, el sesgo de selección
@@ -502,19 +526,28 @@ recuperaríamos el efecto causal local en la frontera:
 
 $$
 \tau_{dif} = \tau(r_0)
-$$ De tal forma si volvemos a nuestra regresión planteada, podemos decir
+$$ 
+De tal forma si volvemos a nuestra regresión planteada, podemos decir
 que el paramentro que nos recupera el efecto causal es $\tau$. Pues esta
 es una regresión estimada a ambos lados de la frontera, con un ancho de
 banda suficientemente pequeño, lo que nos permite comparar unidades que
 son muy similares en términos de geografía, clima, instituciones y
 cultura, pero que difieren únicamente en su exposición a la mita.
 
-veamos la descomposición de esta ecuación: $$
+veamos la descomposición de esta ecuación: 
+
+$$
 Y_i = \alpha + \tau Mita_i + \beta_1 r_i + \beta_2 (Mita_i \cdot r_i) + \epsilon_i
-$$ Cuando $Mita_i=1$:
-$$Y_i = (\alpha + \tau) + (\beta_1 + \beta_2) r_i + \epsilon_i$$ Cuando
-$Mita_i=0$: $$Y_i = \alpha + \beta_1 r_i + \epsilon_i$$ donde la primera
-regresión nos da lo que cimos en clase como $\beta_{o,+}$ y la segunda
+$$ 
+
+Cuando $Mita_i=1$:
+
+$$Y_i = (\alpha + \tau) + (\beta_1 + \beta_2) r_i + \epsilon_i$$ 
+Cuando
+
+$Mita_i=0$: $$Y_i = \alpha + \beta_1 r_i + \epsilon_i$$ 
+
+donde la primera regresión nos da lo que vimos en clase como $\beta_{o,+}$ y la segunda
 regresión nos da $\beta_{o,-}$, de tal forma que el efecto causal local
 en la frontera se obtiene al restar los interceptos de estas dos
 ecuaciones:
@@ -529,15 +562,19 @@ mita se implementó de manera arbitraria en la frontera, y no hay razones
 para creer que las comunidades justo dentro de la mita tuvieran
 características sistemáticamente diferentes a las comunidades justo
 fuera de la mita, más allá de su exposición al sistema de trabajo
-forzoso. Además, dado que la mita se basaba en criterios geográficos,
+forzoso. 
+
+Además, dado que la mita se basaba en criterios geográficos y 
 distancia a los centros mineros y elevación del terreno, es razonable
 pensar que las comunidades cercanas a la frontera compartieran
 condiciones similares en términos de clima, acceso a recursos naturales,
 instituciones y cultura. Por lo tanto, el supuesto de continuidad parece
 creible en este contexto histórico.
 
-Otro supuesto importante mencionado en clase fue el de no no
-manipulación de la running variable.
+Otro supuesto importante mencionado en clase fue no
+manipulación de la running variable. Cómo veremos más adelante el supuesto parace razonable porque el criterio de asignación fue ubicado por la corona con base en factores técnicos de costo administrativos y distancia de las minas. 
+
+Adicionalmente podemos señalar que se requiere el cumplimiento de SUTVA para que no haya otros tratamientos a partir del umbral seleccionado, es decir que no haya diferentes tipos de tratamiento o spilovers entre los dos lados cercanos a la frontera. 
 
 ## Punto 3
 
@@ -571,11 +608,28 @@ ggplot(distritos, aes(x = d_bnd, y = pothuan_mita)) +
               method = "lm", se = TRUE, color = "blue") +
   geom_smooth(data = filter(cuadrantes, d_bnd >= 0), 
               method = "lm", se = TRUE, color = "darkviolet") +
-  labs(title = "Probabilidad de pertenecer a la Mita en la frontera",
+  labs(title = "Probabilidad de pertenecer a la Mita en la frontera Base Distritos",
        x = "Distancia a la frontera ajustada (km)",
        y = "Probabilidad de estar en la Mita") +
   theme_minimal()
 ```
+
+```{r}
+#| echo: false
+#Construyendo gráfica
+ggplot(ninos, aes(x = d_bnd, y = pothuan_mita)) +
+  geom_point(alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  geom_smooth(data = filter(distritos, d_bnd < 0), 
+              method = "lm", se = TRUE, color = "blue") +
+  geom_smooth(data = filter(cuadrantes, d_bnd >= 0), 
+              method = "lm", se = TRUE, color = "darkviolet") +
+  labs(title = "Probabilidad de pertenecer a la Mita en la frontera Base Niños",
+       x = "Distancia a la frontera ajustada (km)",
+       y = "Probabilidad de estar en la Mita") +
+  theme_minimal()
+```
+
 
 **2.**
 
@@ -605,8 +659,8 @@ unidades de observación no pueden manipular su posición en la variable
 de asignación, en este caso en la distancia a la frontera de la mita,
 para influir en su probabilidad de recibir el tratamiento. Si las
 personas manipualaran la asignación para quedar estrategicamente fuera o
-adentro de la Mita, ya no tendriamos grupos comparables a nivel local en
-ambos lados de la forntera.
+adentro de la Mita, ya no tendríamos grupos comparables a nivel local en
+ambos lados de la frontera.
 
 En el caso de la mita, es altamente razonable asumir que este supuesto
 se cumple por dos razones principales. Primero, los criterios de
@@ -617,15 +671,9 @@ inclusión en la mita. Segundo, la mita se implementó en un contexto
 histórico donde las comunidades indígenas tenían muy poco poder de
 decisión sobre sus condiciones de vida, y es poco probable que tuvieran
 los recursos o la capacidad organizativa para manipular su ubicación
-respecto a la frontera.
+respecto de la frontera.
 
-Para aportar evidencia respecto del cumplimiento de este supuesto
-podemos demostrar que la caracteristicas previas al tratamiento no
-cambian, tienen un salto, en la frontera como lo hizo Dell (2010) al
-comaprar elevación y el tributo en 1572. Si estas características no
-presentan saltos en la frontera, esto sugiere que las comunidades no
-manipularon su ubicación respecto a la frontera de la mita, lo que
-fortalece la validez del diseño de RDD.
+Para proveer evidencia empírica de que el supuesto se cumple, la estrategia estándar sería aplicar el test de McCrary (2008): si la densidad estimada de $r_i$ es continua en el umbral, es decir, si no hay un salto estadísticamente significativo en la función de densidad en $r = 0$, se puede rechazar la hipótesis de manipulación.
 
 ## Punto 5
 
@@ -682,7 +730,7 @@ La continuidad local de las covariables en la frontera respalda la
 interpretación causal del salto en los resultados porque sugiere que las
 comunidades a ambos lados de la frontera son comparables en términos de
 características preexistentes. Es decir, el sesgo de selección que vimos
-en el punto 2, donde $\phi_0$ es el punto de corte, se cancela. Esto
+en el punto 2, donde $r_0$ es el punto de corte, se cancela. Esto
 implica que cualquier salto observado en los resultados de interés
 cuando $\eta \to 0$ puede atribuirse única y exclusivamente al efecto de
 la mita:
@@ -887,7 +935,7 @@ banda de ±100 km a n=100 con un ancho de banda de ±25 km. En cuanto a la
 probabilidad de hablar quechua, se pasa de n=1478 con un ancho de banda
 de ±100 km a n=580 con un ancho de banda de ±25 km. Finalmente, en
 cuanto a la tarifa tributaria en 1572, se pasa de n=104 con un ancho de
-banda de ±100 km a n=45 con un ancho de banda de ±25 km.
+banda de ±100 km a n=42 con un ancho de banda de ±25 km.
 
 ## Punto 6
 
@@ -1049,9 +1097,12 @@ modelsummary(
 
 ```
 
-El modelo de la regresión cuadrática para el consumo es: $$
+El modelo de la regresión cuadrática para el consumo es: 
+
+$$
 Log(consumo)_i = \alpha + \gamma Mita_i + \beta_1 r_i + \beta_2 r_i^2+ \delta_1 (r_i \times Mita_i) + \delta_2 (r_i^2 \times Mita_i) + {u_i}
-$$ y la regresión cuadrática para la desnutrición infantil es:
+$$ 
+y la regresión cuadrática para la desnutrición infantil es:
 
 $$
 Desnutrición_i = \alpha + \gamma Mita_i + \beta_1 r_i + \beta_2 r_i^2+ \delta_1 (r_i \times Mita_i) + \delta_2 (r_i^2 \times Mita_i) + u_i
@@ -1106,7 +1157,8 @@ del consumo:
 
 $$
 Log(consumo)_i = \alpha + \gamma Mita_i + \beta_1 x_i + \beta_2 y_i + \delta_1 (x_i \times Mita_i) + \delta_2 (y_i \times Mita_i) + u_i
-$$ y la bidimensional de la desnutrición infantil:
+$$ 
+y la bidimensional de la desnutrición infantil:
 
 $$
 Desnutrición_i = \alpha + \gamma Mita_i +\beta_1 x_i + \beta_2 y_i + \delta_1 (x_i \times Mita_i) + \delta_2 (y_i \times Mita_i) + u_i
@@ -1162,7 +1214,7 @@ económica del 29.3%: $(e^{-0.347} - 1)\times 100 = -29.3\%$ en
 comparación con estar justo fuera de la frontera. Aunque esta magnitud
 es fuerte y consistente con el estudio de (Dell, 2010), al ajustar los
 errores estándar por clúster a nivel de distrito en esta ventana
-reducida de ± 25km, el efecto ya no es estadísticamente significativo.
+reducida de ± 25km, el efecto no es estadísticamente significativo.
 Esto refleja la pérdida de poder estadístico (aumento de la varianza)
 que enfrentamos al aislar una muestra tan pequeña para garantizar
 comparabilidad.
@@ -1183,10 +1235,10 @@ inferencia en la ventana que escogimos.
 coeficiente del parámetro $\hat{\gamma}$ mantiene su signo negativo,
 sugiriendo una disminución del consumo per cápita con una magnitud
 económica del 77.01%:$(e^{-1.470} - 1)\times 100 = -77.01\%$ con una
-significancia marginal al 10%. Es crucial destacar que esta magnitud
+significancia estadistica marginal al 10%. Es crucial destacar que esta magnitud
 está artificialmente inflada por un sobreajuste, pues al tratar de
 ajustar una curva cuadrática en una ventana de apenas ±25 km con pocas
-observaciones hace que las estimaciones en los bordes se disparen y esto
+observaciones las estimaciones en los bordes se disparen y esto
 distorsiona el efecto real
 
 **Desnutrición Infantil:** El coeficiente $\hat{\gamma}$ conserva su
@@ -1224,13 +1276,18 @@ generó un efecto causal negativo estructural, reduciendo el consumo
 actual y aumentando la probabilidad de desnutrición infantil. Sin
 embargo, al aplicar la corrección de errores por clúster tal como lo
 hizo Dell, de acuerdo con su tabla II, esto sumado a una ventana tan
-estrecha (±25 km) hace que se pierde la significancia estadística. Lejos
-de invalidar el ejercicio, esto ilustra a la perfección el trade-off del
+estrecha (±25 km) hace que se pierda la significancia estadística. 
+
+Lo anterior nos permite comprender el trade-off del
 diseño de Regresión Discontinua, logramos reducir el sesgo haciendo los
 grupos muy comparables cerca a la frontera, pero a costa de sacrificar
-drásticamente nuestra varianza y poder estadístico. Asimismo, el
-ejercicio demuestra por qué se desaconseja el uso de polinomios de grado
+drásticamente nuestra varianza y poder estadístico. 
+
+Damos cuenta de por qué se desaconseja el uso de polinomios de grado
 2 en ventanas pequeñas debido al riesgo evidente de sobreajuste.
+
+**Nota:**
+**Si se especifica con errores robustos a cluster, desconociendo la correlación de los errores de los individuos a nivel distrito (ubigeo) se subestimarían los errores estándar dando estadisticamente significativos los coeficientes**
 
 ## Punto 7
 
@@ -1335,7 +1392,7 @@ impacto en la desnutrición de 10.4 puntos porcentuales. A pesar de que
 los errores estándar disminuyen al incluir más datos, los coeficientes
 siguen sin alcanzar niveles de significancia estadística convencionales
 en esta especificación lineal simple, diferente a la realizada por Dell
-quien en su especificación incluía efectos fijos por segemento de la
+quien en su especificación incluía efectos fijos por segmento de la
 frontera y un vector de covariables, lo que al ser incluido reduce la
 varianza y aumenta la precisión. La siguiente fue la ecuación de la
 estimación de la autora:
@@ -1351,6 +1408,8 @@ embargo, esta ganancia en potencia estadística ocurre a costa de
 incrementar el sesgo de selección, puesto que a 100 km se relaja el
 supuesto de continuidad local y dejamos de comparar unidades que son
 estrictamente similares en sus características preexistentes.
+
+**Nota: Aunque no se presentan los resultados cuando se amplia el ancho de banda, en el polinomio de dos dimensiones los resultados para las ventadas de ±50 km y ±100 km generan coeficientes estadisticamente significativos en la dirección esperada, esto reitera el punto sobre el trade-off sesgo varianza**
 
 ## Punto 8
 
@@ -1443,13 +1502,16 @@ no corregidos.
 
 d)  
 
-La corrección tipo Conley permite que los errores estándar sean robustos
-a la autocorrelación espacial al permitir que las observaciones cercanas
-en el espacio puedan tener errores correlacionados, mientras que las
-observaciones más alejadas se consideran independientes. En lugar de
-asumir independencia entre todas las observaciones, esta corrección
-reconoce que las unidades geográficamente cercanas pueden compartir
-choques comunes y ajusta los errores estándar en consecuencia.
+La corrección de Conley (1999) es la extensión espacial de los estimadores de varianza de tipo sandwich. La diferencia
+    fundamental respecto a asumir independencia es la siguiente: en
+    lugar de suponer $\text{Cov}(\varepsilon_i,\varepsilon_j) = 0$ para $i\neq j$, se permite que esta covarianza
+    sea distinta de cero entre observaciones geográficamente cercanas.
+    Adicionalmente, se impone que decrece con la distancia mediante el
+    uso de una función Kernel para ponderar según la proximidad. Al
+    incluir las covarianzas cruzadas entre pares cercanos, el estimador
+    captura la correlación espacial. Dell (2010) implementa esta
+    corrección.
+
 
 # **Segundo Ejercicio**
 
@@ -1509,7 +1571,7 @@ metodología (*máximo 150 palabras*).
 
 **R/:**
 
-El estudio de Bucchianeri (2017) analiza las consecuencias de que una
+El estudio de Bucchianeri  analiza las consecuencias de que una
 mujer gane una elección primaria por un margen estrecho frente a un
 hombre, buscando medir las desventajas que enfrentan las candidatas en
 las elecciones generales de Estados Unidos.
@@ -1521,11 +1583,14 @@ umbral, la asignación del candidato por sexo funciona de forma
 cuasi-aleatoria, eliminando sesgos de selección y aislando el efecto
 causal local.
 
-El supuesto metodológico clave es la continuidad en el umbral: las
-características observables y no observables de los distritos cambian de
-forma suave alrededor del punto de corte, garantizando que cualquier
-salto en los resultados electorales se deba exclusivamente al efecto de
-haber nominado a la mujer para competir en las elecciones generales.
+Los supuestos requeridos son dos. *Continuidad*: asumimos que la CEF,
+en ausencia de tratamiento sería continua en el umbral, y analizamos si
+las características observables están balanceadas a ambos lados del
+umbral para garantizar que el salto en la variable de interés sea debido
+exclusivamente al tratamiento. *No manipulación*: se necesita que no
+haya "bunching" significativo de distritos en donde las consultas dejen
+como resultado una acumulación de la densidad de observaciones de
+control o de tratamiento justo antes o después del umbral. De manera adicional se debe argumentar SUTVA lo que resulta creible para el diseño de este estudio. 
 
 ## Punto 2
 
@@ -1540,40 +1605,53 @@ b)  Explique por qué, si se cumplen los supuestos, es posible recuperar
 **R/:**
 
 a)  En el contexto de Buschianeri (2017), podemos definir los resultados
-    potenciales de la siguiente manera: $$
+    potenciales de la siguiente manera: 
+    $$
     Y_i =
     \begin{cases}
     Y_i(1) & \text{si candidata gana consulta interna.  } D_i = 1 \\
     Y_i(0) & \text{si candidata pierde consulta interna } D_i = 0
     \end{cases}
-    $$ Por su parte el metodo de asignación es: $$
+    $$ 
+    Por su parte el metodo de asignación es: 
+    $$
     D_i=
     \begin{cases}
     D_i = 1 & \text{si el margén de victoria es } Z_i \geq 0 \\
     D_i = 0 & \text{si el margén de victoria es } Z_i < 0
     \end{cases}
-    $$ Si partimos de que la CEF en ausencia de tratamiento sería:
+    $$ 
+    Si partimos de que la CEF en ausencia de tratamiento sería:
 
 $$
 E[Y_i(0)|Z_i]=m(Z_i)
-$$ Buschianeri (2017) esta interesado en el CATE:
+$$ 
+Bucchianeri esta interesado en el CATE:
 
 $$
 \tau(Z_i) = E[Y_i(1) - Y_i(0)|Z_i]
-$$ Solo podemos observar:
+$$ 
+
+Solo podemos observar:
 
 $$
 Y_i=Y_i(0) + D_i \cdot (Y_i(1) - Y_i(0)) 
-$$ Si aplicamos el esperanza condicional:
+$$ 
+
+Si aplicamos el esperanza condicional:
 
 $$
 E[Y_i|Z_i] = E[Y_i(0)|Z_i] + E[(Y_i(1) - Y_i(0))|Z_i]D_i
-$$ Que si remplazamos y partimos de que $\epsilon_i= Y_i-E[Y_i|Z_i]$ y
+$$ 
+
+Que si remplazamos y partimos de que $\epsilon_i= Y_i-E[Y_i|Z_i]$ y
 por tanto que $Y_i= E[Y_i|Z_i]+\epsilon_i$ tenemos que:
 
 $$
 Y_i= m(Z_i) + \tau(Z_i)D_i + \epsilon_i
-$$ Si comparamos resultados promedio a una distancia $\eta$ del umbral
+$$ 
+
+Si comparamos resultados promedio a una distancia $\eta$ del umbral
 por ambos lados, siendo el margen de victoria centrado $Z_0$, tenemos
 que nuestro estimador de diferencia en medias es:
 
@@ -1714,9 +1792,12 @@ En el gráfico podemos observar una discontinuidad en el punto de corte
 tratamiento, donde la mujer pierde la primaria, la probabilidad de ganar
 las elecciones generales es mayor. Por su parte, en el límite por la
 derecha, donde la mujer gana la consulta interna se observa que la
-probabilidad de victoria cae.Intuitivamente, esto tiene en tanto la
-dirección de la caída refleja las barreras estructurales que enfrentan
-las mujeres en las contiendas políticas.
+probabilidad de victoria cae. Intuitivamente, este resultado tiene sentido en el caso republicano (coherente con el paper) y con la base de datos proporcionada que tiene la variable $(party = 1)$ para todas las observaciones, es decir solo contiene el caso republicano. si
+existe un sesgo de votantes, medios o élites del partido contra las candidatas mujeres, ese sesgo
+se manifestaría precisamente en una menor probabilidad de éxito en la elección general, incluso
+cuando la nominación femenina surgió de un proceso cuasi-aleatorio. Lo anterior concuerda con la
+conclusión del autor de que además de las barreras para que las mujeres se presenten a los cargos
+políticos, hay obstáculos una vez ganan las elecciones primarias.
 
 ## Punto 4
 
@@ -2047,15 +2128,15 @@ estadística al 5%.
 
 Aunque este efecto sigue denotando una magnitud económica importante, es
 fundamental señalar que el efecto causal estimado por el modelo global
-es mucho menor que el estimado por la regresión lineal local. Existiendo
+es mucho menor que el estimado por la regresión lineal local, evidenciando  
 una diferencia de 25.6 puntos porcentuales frente a la regresión local
-con BW=0.05, esto sugiere fuertemente que el modelo global introduce un
+con BW=0.05. Lo anterior sugiere fuertemente que el modelo global introduce un
 sesgo de atenuación al incluir observaciones lejanas al umbral que no
 son comparables y que diluyen la estimación del efecto causal local.
 Esto refuerza la premisa metodológica de que, aunque el polinomio global
 es una herramienta útil, la regresión lineal local proporciona una
 estimación mucho más precisa y veraz del efecto causal en el umbral de
-interés.
+interés. Lo anterior nos permite evidenciar que  la regresión local aumenta la validez interna del estudio. 
 
 ## Punto 5
 
@@ -2944,7 +3025,7 @@ posibles valores de $D_i(z)$:
 De esta manera tenemos los siguientes grupos:
 
 | Grupo | $D_i(1)$ | $D_i(0)$ | Descripción |
-|:---|:--:|:--:|:---|
+|:-----------------|:----------------:|:----------------:|:-----------------|
 | **Compliers** | 1 | 0 | Ven la TV de Kuran solo con acceso |
 | **Never-takers** | 0 | 0 | No ven la TV de Kuran aunque tengan acceso |
 | **Always-takers** | 1 | 1 | Ven la TV de Kuran incluso sin acceso |
@@ -3100,6 +3181,8 @@ el efecto de ver la TV de Kuran en el apoyo al régimen para aquellos
 individuos que efectivamente vieron la TV de Kuran por el hecho de tener
 acceso a la señal, es decir, para los compliers.
 
+d)  
+
 ## Punto 4
 
 Estime el efecto de la exposición a la televisión extranjera sobre el
@@ -3124,8 +3207,149 @@ D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
 $$
 
 ```{r}
- 
+#| echo: false
 
+library(haven)
+library(dplyr)
+library(kableExtra)
+library(ggplot2)
+library(fixest)
+library(patchwork)
+library(modelsummary)
 
+Primera_etapa <- feols( D ~ Z + age + educ + female + urban, data = valmoria, cluster =~region)
+modelos_primera <- list("Primera Etapa" = Primera_etapa)
+mapa_coeficientes <- c(
+  "Z"         = "Acceso Señal de Kuran(Z)",
+  "age"       = "Edad",
+  "educ"      = "Años de Educación",
+  "female"    = "Mujer",
+  "urban"     = "Zona Urbana"
+)
 
+mapa_gof <- list(
+  list("raw" = "nobs", "clean" = "Observaciones", "fmt" = 0),
+  list("raw" = "r.squared", "clean" = "R2", "fmt" = 3),
+  list("raw" = "f", "clean" = "Estadístico F", "fmt" = 1) 
+)
+
+modelsummary(
+  modelos_primera,
+  coef_map = mapa_coeficientes, 
+  gof_map = mapa_gof,
+  fmt = 3,
+  stars = c('*' = .1, '**' = .05, '***' = .01),
+  title = "Primera Etapa: Efecto de la Señal y Controles sobre Exposición a TV",
+  output = "kableExtra" 
+) %>%
+  kable_styling(
+    latex_options = c("hold_position", "striped"),
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  # Ponemos en negrita la fila del instrumento (que ahora es la fila 2, debajo del Intercepto)
+  row_spec(2, bold = TRUE, background = "#f2f2f2") %>% 
+  footnote(
+    general = "Errores estándar con correción de cluster a nivel región en parentesis",
+    general_title = "Nota: ",
+    threeparttable = TRUE
+  )
 ```
+
+En la primera etapa, el coeficiente de $Z$ (acceso a la señal de Kuran)
+es positivo y estadísticamente significativo al 1%, lo que indica que el
+acceso a la señal de Kuran aumenta la probabilidad de ver dicha
+televisión. La magnitud del coeficiente nos dice que tener acceso a la
+señal de Kuran aumenta en aproximadamente 41.1 puntos porcentuales la
+probabilidad de ver la TV de Kuran, manteniendo constantes la edad, los
+años de educación, el sexo y si la zonas es urbana. Este resultado nos
+sugiere que el instrumento es relevante para explicar la variación en el
+tratamiento $D$.
+
+b)  
+
+Vamos a estimar 2SLS y MCO para comparar los resultados:
+
+```{r}
+#| echo: false
+
+# Estimacion MCO 
+MCO <- feols(Y~ D + age + educ + female + urban, data = valmoria, cluster = ~region)
+# Primera Etapa 
+First_Stage<- feols(D~ Z + age + educ + female + urban, data = valmoria, cluster = ~region)
+# Forma Reducida
+Reduced_form <- feols(Y~Z +age + educ + female + urban , data = valmoria, cluster = ~region)
+# Estimacion 2SLS
+TWOSLS <- feols(Y ~age + educ + female + urban  | D~Z, data=valmoria, cluster = ~region)
+
+modelos_comparacion <- list("MCO" = MCO,  "Forma Reducida"=Reduced_form, "Primera Etapa" = First_Stage, "2SLS" = TWOSLS)
+mapa_coeficientes <- c( 
+  "D"           = "Ver TV de Kuran (D)",       
+  "fit_D"       = "Ver TV de Kuran (D)",       
+  "Z"           = "Señal de TV (Z)",           
+  "age"         = "Edad",
+  "educ"        = "Años de Educación",
+  "female"      = "Mujer",
+  "urban"       = "Zona Urbana"
+)
+
+mapa_gof <- list(
+  list("raw" = "nobs", "clean" = "Observaciones", "fmt" = 0),
+  list("raw" = "r.squared", "clean" = "R2", "fmt" = 3),
+  list("raw" = "f", "clean" = "Estadístico F", "fmt" = 1) 
+)
+
+modelsummary(
+  modelos_comparacion,
+  coef_map = mapa_coeficientes, # Ahora coincide con el nombre de arriba
+  gof_map = mapa_gof,
+  fmt = 3,
+  stars = c('*' = .1, '**' = .05, '***' = .01),
+  title = "Comparación de Estimadores: Efecto de la TV de Kuran en el Apoyo al Régimen",
+  output = "kableExtra" 
+) %>%
+  kable_styling(
+    latex_options = c("hold_position", "striped"),
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  # Ponemos en negrita la fila del tratamiento (que quedará exactamente en la fila 2)
+  row_spec(2, bold = TRUE, background = "#f2f2f2") %>% 
+  footnote(
+    general = "Errores estándar con correción de cluster a nivel región en parentesis. El modelo MCO presenta sesgo de endogeneidad. En el modelo 2SLS, el consumo de TV (D) está instrumentado por el acceso a la señal (Z).",
+    general_title = "Nota: ",
+    threeparttable = TRUE
+  )
+```
+
+Al contrastar la estimación de MCO con la de 2SLS, observamos que el
+coeficiente de $D$ (ver TV de Kuran) cambia significativamente en
+magnitud y signo. En el modelo MCO, el coeficiente de $D$ negativo y
+estadística mente significativo al 5 indicando que ver la televisión de
+Kuran causa una disminución en el apoyo al regimen de 5.7 puntos
+porcentuales. Sin embargo como vimos en el apartado dos de este punto
+esta estimación esta sesgada debido a la endogeneidad del tratamiento
+$D$.
+
+$$\beta = \beta + \underbrace{\frac{Cov(u_i, \tilde{D_i})}{Var(\tilde{D_i})}}_{\text{Sesgo Endogenidad}}$$
+Por lo tanto sabemos que $Cov(u_i, \tilde{D_i}) < 0$ por lo tanto
+podemos afirmar que el sesgo de endogenidad es negativo. Esto en el caso
+del ejemplo las personas que se autoseleccionan para ver la TV pueden
+ser personas que por características no observables como rebeldía o
+interés tienen una menor probabilidad de apoyar al régimen, lo que hace
+que el sesgo de endogeneidad sea negativo.
+
+Por su parte la estimación de 2SLS nos muestra un coeficiente positivo y
+estadísticamente significativo al 1%, indicando que el efecto causal de
+ver la TV de Kuran en el apoyo al régimen es positivo, es decir, que ver
+la TV de Kuran aumenta el apoyo al régimen en aproximadamente 24.4
+puntos porcentuales para los compliers.Entonces Concluimos que, aislando
+el sesgo, la televisión no socava al gobierno, por el contrario y de
+manera contraintutiva, para el subgrupo de los compliers incrementa la
+probabilidad de apoyar al régimen en 24.4 puntos porcentuales.
+
+La diferencia entre ambos estimadores se explica por el sesgo de
+endogeneidad presente en el modelo MCO, que subestima el efecto real del
+tratamiento $D$ sobre el resultado $Y$.

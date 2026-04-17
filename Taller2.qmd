@@ -321,7 +321,6 @@ tabla_descriptiva_global %>%
   )
 ```
 
-
 ```{r}
 #| echo: false
 # Grafica de la distancia ajustada a la frontera
@@ -460,8 +459,8 @@ La ecuación empírica del modelo local sería:
 
 $$
 Y_i = \alpha + \tau Mita_i + \beta_1 r_i + \beta_2 (Mita_i \cdot r_i) + \epsilon_i
-$$
-**Nota: Se podría añadir un vector de controles e incluso usar efectos fijos como lo hizo la autora en el paper original**
+$$ **Nota: Se podría añadir un vector de controles e incluso usar
+efectos fijos como lo hizo la autora en el paper original**
 
 donde $r_i$ es la distancia a la frontera de la mita, la cual esta
 centrada en cero $r_0=0$ y por tanto la estimación se define en un ancho
@@ -496,9 +495,9 @@ $$
 \tau(r_i) = E[Y_i(1) - Y_i(0) \mid r_i]
 $$
 
-Si sacamos valores esperados en torno a la frontera (denotada por
-$r_0$) y definimos una distancia $\eta$ a la frontera, la diferencia
-observada entre tratados y controles es:
+Si sacamos valores esperados en torno a la frontera (denotada por $r_0$)
+y definimos una distancia $\eta$ a la frontera, la diferencia observada
+entre tratados y controles es:
 
 $$
 \tau_{dif} =
@@ -526,31 +525,29 @@ recuperaríamos el efecto causal local en la frontera:
 
 $$
 \tau_{dif} = \tau(r_0)
-$$ 
-De tal forma si volvemos a nuestra regresión planteada, podemos decir
+$$ De tal forma si volvemos a nuestra regresión planteada, podemos decir
 que el paramentro que nos recupera el efecto causal es $\tau$. Pues esta
 es una regresión estimada a ambos lados de la frontera, con un ancho de
 banda suficientemente pequeño, lo que nos permite comparar unidades que
 son muy similares en términos de geografía, clima, instituciones y
 cultura, pero que difieren únicamente en su exposición a la mita.
 
-veamos la descomposición de esta ecuación: 
+veamos la descomposición de esta ecuación:
 
 $$
 Y_i = \alpha + \tau Mita_i + \beta_1 r_i + \beta_2 (Mita_i \cdot r_i) + \epsilon_i
-$$ 
+$$
 
 Cuando $Mita_i=1$:
 
-$$Y_i = (\alpha + \tau) + (\beta_1 + \beta_2) r_i + \epsilon_i$$ 
-Cuando
+$$Y_i = (\alpha + \tau) + (\beta_1 + \beta_2) r_i + \epsilon_i$$ Cuando
 
-$Mita_i=0$: $$Y_i = \alpha + \beta_1 r_i + \epsilon_i$$ 
+$Mita_i=0$: $$Y_i = \alpha + \beta_1 r_i + \epsilon_i$$
 
-donde la primera regresión nos da lo que vimos en clase como $\beta_{o,+}$ y la segunda
-regresión nos da $\beta_{o,-}$, de tal forma que el efecto causal local
-en la frontera se obtiene al restar los interceptos de estas dos
-ecuaciones:
+donde la primera regresión nos da lo que vimos en clase como
+$\beta_{o,+}$ y la segunda regresión nos da $\beta_{o,-}$, de tal forma
+que el efecto causal local en la frontera se obtiene al restar los
+interceptos de estas dos ecuaciones:
 
 $$
 (\alpha + \tau)-\alpha = \tau
@@ -562,19 +559,24 @@ mita se implementó de manera arbitraria en la frontera, y no hay razones
 para creer que las comunidades justo dentro de la mita tuvieran
 características sistemáticamente diferentes a las comunidades justo
 fuera de la mita, más allá de su exposición al sistema de trabajo
-forzoso. 
+forzoso.
 
-Además, dado que la mita se basaba en criterios geográficos y 
-distancia a los centros mineros y elevación del terreno, es razonable
-pensar que las comunidades cercanas a la frontera compartieran
-condiciones similares en términos de clima, acceso a recursos naturales,
+Además, dado que la mita se basaba en criterios geográficos y distancia
+a los centros mineros y elevación del terreno, es razonable pensar que
+las comunidades cercanas a la frontera compartieran condiciones
+similares en términos de clima, acceso a recursos naturales,
 instituciones y cultura. Por lo tanto, el supuesto de continuidad parece
 creible en este contexto histórico.
 
-Otro supuesto importante mencionado en clase fue no
-manipulación de la running variable. Cómo veremos más adelante el supuesto parace razonable porque el criterio de asignación fue ubicado por la corona con base en factores técnicos de costo administrativos y distancia de las minas. 
+Otro supuesto importante mencionado en clase fue no manipulación de la
+running variable. Cómo veremos más adelante el supuesto parace razonable
+porque el criterio de asignación fue ubicado por la corona con base en
+factores técnicos de costo administrativos y distancia de las minas.
 
-Adicionalmente podemos señalar que se requiere el cumplimiento de SUTVA para que no haya otros tratamientos a partir del umbral seleccionado, es decir que no haya diferentes tipos de tratamiento o spilovers entre los dos lados cercanos a la frontera. 
+Adicionalmente podemos señalar que se requiere el cumplimiento de SUTVA
+para que no haya otros tratamientos a partir del umbral seleccionado, es
+decir que no haya diferentes tipos de tratamiento o spilovers entre los
+dos lados cercanos a la frontera.
 
 ## Punto 3
 
@@ -601,14 +603,14 @@ distancia ajustada a la frontera.
 ```{r}
 #| echo: false
 #Construyendo gráfica
-ggplot(distritos, aes(x = d_bnd, y = pothuan_mita)) +
+ggplot(hogares, aes(x = d_bnd, y = pothuan_mita)) +
   geom_point(alpha = 0.2) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
   geom_smooth(data = filter(distritos, d_bnd < 0), 
               method = "lm", se = TRUE, color = "blue") +
   geom_smooth(data = filter(cuadrantes, d_bnd >= 0), 
               method = "lm", se = TRUE, color = "darkviolet") +
-  labs(title = "Probabilidad de pertenecer a la Mita en la frontera Base Distritos",
+  labs(title = "Prob de pertenecer a la Mita en la frontera Base Distritos",
        x = "Distancia a la frontera ajustada (km)",
        y = "Probabilidad de estar en la Mita") +
   theme_minimal()
@@ -629,7 +631,6 @@ ggplot(ninos, aes(x = d_bnd, y = pothuan_mita)) +
        y = "Probabilidad de estar en la Mita") +
   theme_minimal()
 ```
-
 
 **2.**
 
@@ -673,7 +674,11 @@ decisión sobre sus condiciones de vida, y es poco probable que tuvieran
 los recursos o la capacidad organizativa para manipular su ubicación
 respecto de la frontera.
 
-Para proveer evidencia empírica de que el supuesto se cumple, la estrategia estándar sería aplicar el test de McCrary (2008): si la densidad estimada de $r_i$ es continua en el umbral, es decir, si no hay un salto estadísticamente significativo en la función de densidad en $r = 0$, se puede rechazar la hipótesis de manipulación.
+Para proveer evidencia empírica de que el supuesto se cumple, la
+estrategia estándar sería aplicar el test de McCrary (2008): si la
+densidad estimada de $r_i$ es continua en el umbral, es decir, si no hay
+un salto estadísticamente significativo en la función de densidad en
+$r = 0$, se puede rechazar la hipótesis de manipulación.
 
 ## Punto 5
 
@@ -1097,12 +1102,11 @@ modelsummary(
 
 ```
 
-El modelo de la regresión cuadrática para el consumo es: 
+El modelo de la regresión cuadrática para el consumo es:
 
 $$
 Log(consumo)_i = \alpha + \gamma Mita_i + \beta_1 r_i + \beta_2 r_i^2+ \delta_1 (r_i \times Mita_i) + \delta_2 (r_i^2 \times Mita_i) + {u_i}
-$$ 
-y la regresión cuadrática para la desnutrición infantil es:
+$$ y la regresión cuadrática para la desnutrición infantil es:
 
 $$
 Desnutrición_i = \alpha + \gamma Mita_i + \beta_1 r_i + \beta_2 r_i^2+ \delta_1 (r_i \times Mita_i) + \delta_2 (r_i^2 \times Mita_i) + u_i
@@ -1157,8 +1161,7 @@ del consumo:
 
 $$
 Log(consumo)_i = \alpha + \gamma Mita_i + \beta_1 x_i + \beta_2 y_i + \delta_1 (x_i \times Mita_i) + \delta_2 (y_i \times Mita_i) + u_i
-$$ 
-y la bidimensional de la desnutrición infantil:
+$$ y la bidimensional de la desnutrición infantil:
 
 $$
 Desnutrición_i = \alpha + \gamma Mita_i +\beta_1 x_i + \beta_2 y_i + \delta_1 (x_i \times Mita_i) + \delta_2 (y_i \times Mita_i) + u_i
@@ -1214,9 +1217,9 @@ económica del 29.3%: $(e^{-0.347} - 1)\times 100 = -29.3\%$ en
 comparación con estar justo fuera de la frontera. Aunque esta magnitud
 es fuerte y consistente con el estudio de (Dell, 2010), al ajustar los
 errores estándar por clúster a nivel de distrito en esta ventana
-reducida de ± 25km, el efecto no es estadísticamente significativo.
-Esto refleja la pérdida de poder estadístico (aumento de la varianza)
-que enfrentamos al aislar una muestra tan pequeña para garantizar
+reducida de ± 25km, el efecto no es estadísticamente significativo. Esto
+refleja la pérdida de poder estadístico (aumento de la varianza) que
+enfrentamos al aislar una muestra tan pequeña para garantizar
 comparabilidad.
 
 **Desnutrición Infantil:** Por su parte, el coeficiente $\hat{\gamma}$
@@ -1235,10 +1238,10 @@ inferencia en la ventana que escogimos.
 coeficiente del parámetro $\hat{\gamma}$ mantiene su signo negativo,
 sugiriendo una disminución del consumo per cápita con una magnitud
 económica del 77.01%:$(e^{-1.470} - 1)\times 100 = -77.01\%$ con una
-significancia estadistica marginal al 10%. Es crucial destacar que esta magnitud
-está artificialmente inflada por un sobreajuste, pues al tratar de
-ajustar una curva cuadrática en una ventana de apenas ±25 km con pocas
-observaciones las estimaciones en los bordes se disparen y esto
+significancia estadistica marginal al 10%. Es crucial destacar que esta
+magnitud está artificialmente inflada por un sobreajuste, pues al tratar
+de ajustar una curva cuadrática en una ventana de apenas ±25 km con
+pocas observaciones las estimaciones en los bordes se disparen y esto
 distorsiona el efecto real
 
 **Desnutrición Infantil:** El coeficiente $\hat{\gamma}$ conserva su
@@ -1276,18 +1279,20 @@ generó un efecto causal negativo estructural, reduciendo el consumo
 actual y aumentando la probabilidad de desnutrición infantil. Sin
 embargo, al aplicar la corrección de errores por clúster tal como lo
 hizo Dell, de acuerdo con su tabla II, esto sumado a una ventana tan
-estrecha (±25 km) hace que se pierda la significancia estadística. 
+estrecha (±25 km) hace que se pierda la significancia estadística.
 
-Lo anterior nos permite comprender el trade-off del
-diseño de Regresión Discontinua, logramos reducir el sesgo haciendo los
-grupos muy comparables cerca a la frontera, pero a costa de sacrificar
-drásticamente nuestra varianza y poder estadístico. 
+Lo anterior nos permite comprender el trade-off del diseño de Regresión
+Discontinua, logramos reducir el sesgo haciendo los grupos muy
+comparables cerca a la frontera, pero a costa de sacrificar
+drásticamente nuestra varianza y poder estadístico.
 
-Damos cuenta de por qué se desaconseja el uso de polinomios de grado
-2 en ventanas pequeñas debido al riesgo evidente de sobreajuste.
+Damos cuenta de por qué se desaconseja el uso de polinomios de grado 2
+en ventanas pequeñas debido al riesgo evidente de sobreajuste.
 
-**Nota:**
-**Si se especifica con errores robustos a cluster, desconociendo la correlación de los errores de los individuos a nivel distrito (ubigeo) se subestimarían los errores estándar dando estadisticamente significativos los coeficientes**
+**Nota:** **Si se especifica con errores robustos a cluster,
+desconociendo la correlación de los errores de los individuos a nivel
+distrito (ubigeo) se subestimarían los errores estándar dando
+estadisticamente significativos los coeficientes**
 
 ## Punto 7
 
@@ -1409,7 +1414,11 @@ incrementar el sesgo de selección, puesto que a 100 km se relaja el
 supuesto de continuidad local y dejamos de comparar unidades que son
 estrictamente similares en sus características preexistentes.
 
-**Nota: Aunque no se presentan los resultados cuando se amplia el ancho de banda, en el polinomio de dos dimensiones los resultados para las ventadas de ±50 km y ±100 km generan coeficientes estadisticamente significativos en la dirección esperada, esto reitera el punto sobre el trade-off sesgo varianza**
+**Nota: Aunque no se presentan los resultados cuando se amplia el ancho
+de banda, en el polinomio de dos dimensiones los resultados para las
+ventadas de ±50 km y ±100 km generan coeficientes estadisticamente
+significativos en la dirección esperada, esto reitera el punto sobre el
+trade-off sesgo varianza**
 
 ## Punto 8
 
@@ -1502,16 +1511,16 @@ no corregidos.
 
 d)  
 
-La corrección de Conley (1999) es la extensión espacial de los estimadores de varianza de tipo sandwich. La diferencia
-    fundamental respecto a asumir independencia es la siguiente: en
-    lugar de suponer $\text{Cov}(\varepsilon_i,\varepsilon_j) = 0$ para $i\neq j$, se permite que esta covarianza
-    sea distinta de cero entre observaciones geográficamente cercanas.
-    Adicionalmente, se impone que decrece con la distancia mediante el
-    uso de una función Kernel para ponderar según la proximidad. Al
-    incluir las covarianzas cruzadas entre pares cercanos, el estimador
-    captura la correlación espacial. Dell (2010) implementa esta
-    corrección.
-
+La corrección de Conley (1999) es la extensión espacial de los
+estimadores de varianza de tipo sandwich. La diferencia fundamental
+respecto a asumir independencia es la siguiente: en lugar de suponer
+$\text{Cov}(\varepsilon_i,\varepsilon_j) = 0$ para $i\neq j$, se permite
+que esta covarianza sea distinta de cero entre observaciones
+geográficamente cercanas. Adicionalmente, se impone que decrece con la
+distancia mediante el uso de una función Kernel para ponderar según la
+proximidad. Al incluir las covarianzas cruzadas entre pares cercanos, el
+estimador captura la correlación espacial. Dell (2010) implementa esta
+corrección.
 
 # **Segundo Ejercicio**
 
@@ -1571,10 +1580,10 @@ metodología (*máximo 150 palabras*).
 
 **R/:**
 
-El estudio de Bucchianeri  analiza las consecuencias de que una
-mujer gane una elección primaria por un margen estrecho frente a un
-hombre, buscando medir las desventajas que enfrentan las candidatas en
-las elecciones generales de Estados Unidos.
+El estudio de Bucchianeri analiza las consecuencias de que una mujer
+gane una elección primaria por un margen estrecho frente a un hombre,
+buscando medir las desventajas que enfrentan las candidatas en las
+elecciones generales de Estados Unidos.
 
 El diseño de regresión discontinua (RD) es ideal porque asume que los
 distritos donde las mujeres ganan por un margen mínimo son
@@ -1583,14 +1592,16 @@ umbral, la asignación del candidato por sexo funciona de forma
 cuasi-aleatoria, eliminando sesgos de selección y aislando el efecto
 causal local.
 
-Los supuestos requeridos son dos. *Continuidad*: asumimos que la CEF,
-en ausencia de tratamiento sería continua en el umbral, y analizamos si
-las características observables están balanceadas a ambos lados del
-umbral para garantizar que el salto en la variable de interés sea debido
+Los supuestos requeridos son dos. *Continuidad*: asumimos que la CEF, en
+ausencia de tratamiento sería continua en el umbral, y analizamos si las
+características observables están balanceadas a ambos lados del umbral
+para garantizar que el salto en la variable de interés sea debido
 exclusivamente al tratamiento. *No manipulación*: se necesita que no
 haya "bunching" significativo de distritos en donde las consultas dejen
 como resultado una acumulación de la densidad de observaciones de
-control o de tratamiento justo antes o después del umbral. De manera adicional se debe argumentar SUTVA lo que resulta creible para el diseño de este estudio. 
+control o de tratamiento justo antes o después del umbral. De manera
+adicional se debe argumentar SUTVA lo que resulta creible para el diseño
+de este estudio.
 
 ## Punto 2
 
@@ -1605,55 +1616,50 @@ b)  Explique por qué, si se cumplen los supuestos, es posible recuperar
 **R/:**
 
 a)  En el contexto de Buschianeri (2017), podemos definir los resultados
-    potenciales de la siguiente manera: 
-    $$
+    potenciales de la siguiente manera: $$
     Y_i =
     \begin{cases}
     Y_i(1) & \text{si candidata gana consulta interna.  } D_i = 1 \\
     Y_i(0) & \text{si candidata pierde consulta interna } D_i = 0
     \end{cases}
-    $$ 
-    Por su parte el metodo de asignación es: 
-    $$
+    $$ Por su parte el metodo de asignación es: $$
     D_i=
     \begin{cases}
     D_i = 1 & \text{si el margén de victoria es } Z_i \geq 0 \\
     D_i = 0 & \text{si el margén de victoria es } Z_i < 0
     \end{cases}
-    $$ 
-    Si partimos de que la CEF en ausencia de tratamiento sería:
+    $$ Si partimos de que la CEF en ausencia de tratamiento sería:
 
 $$
 E[Y_i(0)|Z_i]=m(Z_i)
-$$ 
-Bucchianeri esta interesado en el CATE:
+$$ Bucchianeri esta interesado en el CATE:
 
 $$
 \tau(Z_i) = E[Y_i(1) - Y_i(0)|Z_i]
-$$ 
+$$
 
 Solo podemos observar:
 
 $$
 Y_i=Y_i(0) + D_i \cdot (Y_i(1) - Y_i(0)) 
-$$ 
+$$
 
 Si aplicamos el esperanza condicional:
 
 $$
 E[Y_i|Z_i] = E[Y_i(0)|Z_i] + E[(Y_i(1) - Y_i(0))|Z_i]D_i
-$$ 
+$$
 
-Que si remplazamos y partimos de que $\epsilon_i= Y_i-E[Y_i|Z_i]$ y
-por tanto que $Y_i= E[Y_i|Z_i]+\epsilon_i$ tenemos que:
+Que si remplazamos y partimos de que $\epsilon_i= Y_i-E[Y_i|Z_i]$ y por
+tanto que $Y_i= E[Y_i|Z_i]+\epsilon_i$ tenemos que:
 
 $$
 Y_i= m(Z_i) + \tau(Z_i)D_i + \epsilon_i
-$$ 
+$$
 
-Si comparamos resultados promedio a una distancia $\eta$ del umbral
-por ambos lados, siendo el margen de victoria centrado $Z_0$, tenemos
-que nuestro estimador de diferencia en medias es:
+Si comparamos resultados promedio a una distancia $\eta$ del umbral por
+ambos lados, siendo el margen de victoria centrado $Z_0$, tenemos que
+nuestro estimador de diferencia en medias es:
 
 $$
 \tau_\text{dif}(\eta)= E[Y_i|Z_i = Z_0 + \eta] - E[Y_i|Z_i = Z_0 - \eta] = \tau(Z_0+\eta) + m(Z_0 + \eta) - m(Z_0 - \eta)
@@ -1792,12 +1798,17 @@ En el gráfico podemos observar una discontinuidad en el punto de corte
 tratamiento, donde la mujer pierde la primaria, la probabilidad de ganar
 las elecciones generales es mayor. Por su parte, en el límite por la
 derecha, donde la mujer gana la consulta interna se observa que la
-probabilidad de victoria cae. Intuitivamente, este resultado tiene sentido en el caso republicano (coherente con el paper) y con la base de datos proporcionada que tiene la variable $(party = 1)$ para todas las observaciones, es decir solo contiene el caso republicano. si
-existe un sesgo de votantes, medios o élites del partido contra las candidatas mujeres, ese sesgo
-se manifestaría precisamente en una menor probabilidad de éxito en la elección general, incluso
-cuando la nominación femenina surgió de un proceso cuasi-aleatorio. Lo anterior concuerda con la
-conclusión del autor de que además de las barreras para que las mujeres se presenten a los cargos
-políticos, hay obstáculos una vez ganan las elecciones primarias.
+probabilidad de victoria cae. Intuitivamente, este resultado tiene
+sentido en el caso republicano (coherente con el paper) y con la base de
+datos proporcionada que tiene la variable $(party = 1)$ para todas las
+observaciones, es decir solo contiene el caso republicano. si existe un
+sesgo de votantes, medios o élites del partido contra las candidatas
+mujeres, ese sesgo se manifestaría precisamente en una menor
+probabilidad de éxito en la elección general, incluso cuando la
+nominación femenina surgió de un proceso cuasi-aleatorio. Lo anterior
+concuerda con la conclusión del autor de que además de las barreras para
+que las mujeres se presenten a los cargos políticos, hay obstáculos una
+vez ganan las elecciones primarias.
 
 ## Punto 4
 
@@ -2128,15 +2139,17 @@ estadística al 5%.
 
 Aunque este efecto sigue denotando una magnitud económica importante, es
 fundamental señalar que el efecto causal estimado por el modelo global
-es mucho menor que el estimado por la regresión lineal local, evidenciando  
+es mucho menor que el estimado por la regresión lineal local,
+evidenciando\
 una diferencia de 25.6 puntos porcentuales frente a la regresión local
-con BW=0.05. Lo anterior sugiere fuertemente que el modelo global introduce un
-sesgo de atenuación al incluir observaciones lejanas al umbral que no
-son comparables y que diluyen la estimación del efecto causal local.
-Esto refuerza la premisa metodológica de que, aunque el polinomio global
-es una herramienta útil, la regresión lineal local proporciona una
-estimación mucho más precisa y veraz del efecto causal en el umbral de
-interés. Lo anterior nos permite evidenciar que  la regresión local aumenta la validez interna del estudio. 
+con BW=0.05. Lo anterior sugiere fuertemente que el modelo global
+introduce un sesgo de atenuación al incluir observaciones lejanas al
+umbral que no son comparables y que diluyen la estimación del efecto
+causal local. Esto refuerza la premisa metodológica de que, aunque el
+polinomio global es una herramienta útil, la regresión lineal local
+proporciona una estimación mucho más precisa y veraz del efecto causal
+en el umbral de interés. Lo anterior nos permite evidenciar que la
+regresión local aumenta la validez interna del estudio.
 
 ## Punto 5
 
@@ -2202,7 +2215,7 @@ $$
 $$
 
 Este efecto ($\tau(Z_0)$) es válido porque el supuesto de continuidad
-local sí se cumple a nivel de distrito:
+local se cumple a nivel de distrito:
 
 $$
 \lim_{z \to 0^+} m(z) = \lim_{z \to 0^-} m(z)
@@ -2298,9 +2311,9 @@ En cuanto al primer obstáculo mencionado por Marshall (2024), en el cual
 el PCRD no asigna aleatoriamente la característica de interés, en el
 contexto del caso de Bucchianeri (2018), esto se traduce en que las
 elecciones cerradas no asignan aleatoriamente el género de la persona
-que gana la primaria. Cómo vimos en nuestra respuesta al punto anterior,
-cuando se el objetivo es aislar el efecto del género o similares, el
-supuesto de continuidad se viola porque como indica Marshall (2024):
+que gana la elección primaria. Cómo vimos en nuestra respuesta al punto
+anterior, cuandoel objetivo es aislar el efecto del género o similares,
+el supuesto de continuidad se viola porque como indica Marshall (2024):
 
 "gender is often viewed as an inherently bundled treat-ment comprising
 various correlated features; women who win close elections may espouse
@@ -2311,7 +2324,7 @@ Por lo anterior si uno busca afirmar que el efecto encontrado es el del
 genero debe partir de un supuesto fuerte: Que mujeres y hombres en torno
 al umbral $Z_0$ son iguales en covariables inobservables y que los
 votantes no tienen ninguna preferencia respecto al sexo de la persona.
-Cómo esto es difícil de sostener en la realidad Bucchianeri (2018) hace
+Cómo esto es difícil de sostener en la realidad, Bucchianeri (2018) hace
 explicito que su estudio identifica el efecto de nominar una mujer, no
 el efecto puro del género.
 
@@ -2323,7 +2336,8 @@ directamente determinar la running variable. En el caso de Bucchianeri
 (2018), esto se traduce en que las preferencias de las personas votantes
 por candidatos hombres o mujeres influye en la cantidad de votos que
 obtiene cada uno, lo que a su vez determina el margen de victoria o
-derrota en la primaria.
+derrota en la primaria. Esto viola una condición critica par el diseño
+del RDD: que el tratamiento de interés no determine la running variable.
 
 Por lo anterior se presenta lo que Marshall denomina compensating
 differentials. Es decir, si el distrito electoral tiene preferencias por
@@ -2332,7 +2346,7 @@ desventaja con mayor esfuerzo o mayores habilidades. Por lo tanto, las
 características inobservables de las mujeres serán diferentes y
 superiores a las de los hombres en el margen.
 
-Al evaluar estrictamente el umbral del empate técnico ($Z_0 = 0$), el
+Al evaluar estrictamente el umbral del empate técnico ($Z = 0$), el
 diseño RDD nos fuerza a comparar a una mujer que tuvo que ser
 excepcional para lograr empatar la primaria contra un hombre de
 habilidades promedio. Esto introduce un severo sesgo de selección
@@ -2342,9 +2356,18 @@ del género.
 En consecuencia, cualquier efecto estimado podría estar contaminado por
 esta relación directa entre el género y el margen, dificultando la
 identificación del efecto causal del género sobre la probabilidad de
-victoria en las elecciones generales pues trae consigo todo del sesgo de
+victoria en las elecciones generales, pues trae consigo todo el sesgo de
 las caracteristicas no observables que permiten a la mujer competir en
 el margen.
+
+Ambos problemas implican que, cerca del umbral, las mujeres y los
+hombres que ganaron primarias cer- radas no son comparables en todas las
+dimensiones relevantes. La diferencia observada en resultados de la
+elección general no refleja únicamente el efecto del género, sino una
+mezcla del efecto del género y el efecto de los compensadores
+diferenciales que permitieron que la elección fuera cerrada a pesar de
+la diferencia de género. El estimador RD entonces captura un efecto
+compuesto, no el LATE exclusivamente atribuible al género.
 
 ## Punto 7
 
@@ -2427,19 +2450,29 @@ RDD es:
 
 $$
 \tau_{RDD}=\lim_{z\to0^+} E[Y_i|Z=z] - \lim_{z\to0^-} E[Y_j|Z=z]
-$$ Que en nuestro caso es equivalente a comperar en el el umbral $Z_0=0$
-a una mujer $i$ que ganó por un voto contra un hombre $j$ que perdió por
-un voto.
+$$
+
+Que en nuestro caso es equivalente a comparar en el el umbral $Z_0=0$ el
+desempeño esperado en la elección general de una mujer $i$ que apenas
+ganó la consulta interna, frente al desempeño esperado de un hombre $j$
+que apenas ganó la consulta interna (es decir, el escenario donde la
+mujer perdió por un margen ínfimo y el hombre avanzó a la general).
 
 $$
 \tau_{RDD}= E[Y_i(1)|Z=0, Female_i=1] -  E[Y_j(1)|Z=0, Female_j=0]
-$$ Ahora incorporamos nuestra ecuación de resultado potencial: $$
+$$
+
+Ahora incorporamos nuestra ecuación de resultado potencial:
+
+$$
 \tau_{RDD}= E[\tau Female_i + \gamma W_i + u_i |Z=0, Female_i=1] -  E[\tau Female_j + \gamma W_j + u_j|Z=0, Female_j=0]
 $$ Tenemos que:
 
 $$
 \tau_{RDD}= (\tau+ \gamma  E[W_i|Z=0] + E[u_i|Z=0]) - ( \gamma  E[W_j|Z=0] + E[u_j|Z=0])
-$$ Si suponemos que $E[u_i]=E[u_j]=0$ tenemos:
+$$
+
+Si suponemos que $E[u_i]=E[u_j]=0$ tenemos:
 
 $$
 \tau_{RDD}= \tau+ \gamma  E[W_i|Z=0] -  \gamma  E[W_j|Z=0])
@@ -2572,6 +2605,53 @@ $$
 \text{plim}_{n \to \infty} |\hat{\tau}_{RDD}| < |\tau|
 $$
 
+Una repuesta mas formal matemáticamente sería la siguiente, partiendo
+de:
+
+$$
+\hat{\tau}_{PCRD} \xrightarrow{p} \tau + \gamma \mathbb{E}[W_i - W_j \mid Z = 0]
+$$
+
+Dado que asumimos que $W_i - W_j \sim N(0, \sigma^2_W)$, aplicando la
+fórmula del paper de Marshall es posible afirmar que:
+
+$$
+\mathbb{E}[W_i - W_j \mid Z = 0] = \frac{-\beta_F \beta_W \sigma^2_W}{\beta_W^2 \sigma^2_W + \sigma^2_\varepsilon}
+$$
+
+Sustituyendo:
+
+$$\hat{\tau}_{PCRD} \xrightarrow{p} \tau + \gamma \left(
+-\frac{\beta_F \beta_W \sigma^2_W}{\beta_W^2 \sigma^2_W + \sigma^2_\varepsilon} \right)
+= \tau - \gamma \frac{\beta_F \beta_W \sigma^2_W}{\beta_W^2 \sigma^2_W + \sigma^2_\varepsilon}$$
+
+Ahora analizamos el signo del sesgo bajo los supuestos del enunciado:
+
+-   $\tau \leq 0$: ser mujer perjudica la probabilidad de ganar la
+    general
+-   $\gamma \geq 0$: el compensador $W_i$ (años de educación) favorece
+    ganar la general
+-   $\beta_F < 0$: ser mujer reduce los votos en la primaria
+-   $\beta_W > 0$: mayor $W_i$ aumenta los votos en la primaria
+
+El término del sesgo es:
+
+$$-\gamma \frac{\underbrace{\beta_F}{<0} \cdot \underbrace{\beta_W}{>0} \cdot
+\underbrace{\sigma^2_W}_{>0}}{\underbrace{\beta_W^2 \sigma^2_W +
+\sigma^2_\varepsilon}_{>0}} > 0$$
+
+Es decir, el sesgo es positivo, entonces:
+
+$$\hat{\tau}{PCRD} \xrightarrow{p} \underbrace{\tau}{\leq 0} +
+\underbrace{\text{sesgo}}_{> 0}$$
+
+Esto implica que $\hat{\tau}_{PCRD}$ está sesgado hacia cero respecto a
+$\tau$, y por tanto:
+
+$$\operatorname{plim}{n \to \infty} |\hat{\tau}{RD}| < |\tau|$$
+
+El estimador RD subestima el efecto causal del género en valor absoluto.
+
 ## Punto 8
 
 Finalmente, Marshall (2024) señala que una estrategia prometedora para
@@ -2591,10 +2671,11 @@ Siguiendo la lógica expuesta por Marshalla en el apartado "Bounding and
 Correcting Effect Magnitudes" y especificamente en la ecuación (9) del
 articulo: $$
 \hat{\tau}_{PCRD}^{corr} = \hat{\tau}_{PCRD} - \sum_{k=1} \hat{\gamma}_k \cdot \hat{\delta}_k
-$$ donde Marshall propone corregir el estimador PCRD restando el
-producto de los coeficientes del compensador diferencial
-($\hat{\gamma}_k$) y el LATE del compensador diferencial
-($\hat{\delta}_k$).
+$$
+
+donde Marshall propone corregir el estimador PCRD restando el producto
+de los coeficientes del compensador diferencial ($\hat{\gamma}_k$) y el
+LATE del compensador diferencial ($\hat{\delta}_k$).
 
 En nuestro caso, sabemos que el único compensador diferencial que
 tenemos es años de educación. Entonces el procedimiento sería el
@@ -2617,7 +2698,7 @@ ser mujer. Es decir, estimamos la siguiente regresión:
 
 $$
 W_d=\alpha + \delta_W Female_d+\beta_1 Z_i+\beta_2 (Female_d \cdot Z_i) + \epsilon_d
-$$ De donde recuperamos el cofeciciente $\hat{\delta}_W$ que es el LATE
+$$ De donde recuperamos el coeficiente $\hat{\delta}_W$ que es el LATE
 del compensador diferencial. Es decir, el efecto de ser mujer en los
 años de educación en el umbral de empate técnico:
 
@@ -2640,20 +2721,25 @@ $$
 Entonces ya estimamos el desbalance del compensador en el umbral. Es
 decir, cual es la diferencia promedio en educación entre hombres y
 mujeres en el umbral. Ahora tenemos que estimar el efecto de dicho
-compensador $\hat{\gamma}$.de tal manera que nuestro estimador sea
-consistente $plim_{n\to \infty} \hat{\gamma}=\gamma$. Con esto el
-estimador corregido sería:
+compensador $\hat{\gamma}$ de tal manera que nuestro estimador sea
+consistente $plim_{n\to \infty} \hat{\gamma}=\gamma$.
+
+Con esto el estimador corregido sería:
 
 $$
 \hat{\tau}_{PCRD}^{corr} = \hat{\tau}_{PCRD} - \hat{\gamma} \cdot \hat{\delta}_W
-$$ que si tomamos el límite en probabilidad de este estimador corregido
+$$
+
+que si tomamos el límite en probabilidad de este estimador corregido
 tenemos que:
 
 $$
 \text{plim}_{n \to \infty} \hat{\tau}_{PCRD}^{corr} = \tau+ \gamma (E[W_i|Z=0] -  E[W_j|Z=0]) - \gamma \cdot (E[W_i|Z=0] -  E[W_j|Z=0]) 
-$$ Obteniendo un estimador consistente del efecto causal de ser mujer en
-la probabilidad de ganar las elecciones generales. Es decir, el efecto
-de ser mujer sin el sesgo del compensador diferencial.
+$$
+
+Obteniendo un estimador consistente del efecto causal de ser mujer en la
+probabilidad de ganar las elecciones generales. Es decir, el efecto de
+ser mujer sin el sesgo del compensador diferencial.
 
 # **Tercer Ejercicio**
 
@@ -2763,7 +2849,7 @@ Descriptivas %>%
 Esta primera tabla nos permite notar que nuestra muestra cuenta con
 3.600 observaciones. El 70% de los hogares tiene acceso técnico a la
 señal de Kuran $(Z=1)$ y el 77% efectivamente ve dicha televisión
-\$(D=1). La edad promedio es de 40 años, el 51% son mujeres, el promedio
+$(D=1)$. La edad promedio es de 40 años, el 51% son mujeres, el promedio
 de años de educación es de 12 años, y el 56% vive en zonas urbanas. A
 nivel agregado, el 59% de la muestra apoya al régimen.
 
@@ -2816,7 +2902,7 @@ kable_styling(
   )
 ```
 
-La tabla de balance nos permite identificar que existen diferencias
+La tabla 11 de balance nos permite identificar que existen diferencias
 estadísticamente significativas entre los hogares dentro y fuera del
 Valle Umbrak. Específicamente observamos que el 90% de los hogares con
 acceso $(Z=1)$ reporta ver la TV de Kuran, frente a un nada despreciable
@@ -2827,7 +2913,7 @@ Kuran apoyan al regimen en un 62% mientras que los hogares sin acceso lo
 hacen en un 50%, de nuevo esta diferencia es estadísticamente
 significativa al 1%. Además vemos que Los hogares con acceso a la señal
 son significativamente (al 1%) más urbanos con 64% frente a los que no
-cuentan con acceso que cuentan con un 38%.Por último, notamos que no
+cuentan con acceso que son urbanos en un38%.Por último, notamos que no
 existen diferencias estadísticamente significativas entre ambos grupos
 en variables como edad, género y años de educación.
 
@@ -2839,20 +2925,23 @@ a la señal, hayan reportado ver la TV de Kuran nos indica un sesgo de
 autoselección pues a pesar de que no tienen acceso técnico a la señal,
 de alguna manera logran verla. Así mismo el hecho que solo el 90% de las
 personas con acceso a la señal reporten ver la TV de Kuran nos indica
-que el instrumento $Z$ no tiene perfect compliance en los que no son
-tratados. Lo anterior tiene dos implicaciones: i) en primer lugar que
-algunos hogares sin acceso a la señal hayan reportado ver la la TV de
-Kuran implica que el tratamiento $D$ definido como ver la TV de Kuran
-puede ser endogeno, toda vez que puede haber características no
-observables como rebeldía, interés que estén correlacionados con el
-apoyo al régimen y en consecuencia que se encuentrene $u_i$ de tal
-manera que $E[D_iu_i]\neq 0$. ii) En segundo lugar, el hecho de que el
-instrumento $Z$ no tenga perfect compliance nos indica que deberiamos
-reconocer efectos heterogeneos, es decir tendríamos que estimar un
-$LATE$ y no un $ATE$. Por último cómo vemos que hay diferencia
-estadisticamente significativas en la proporción de zona urbana para
-$(Z=1)$ y $(Z=0)$ sabemos que debemos controlar por esta variables en
-cualquier especificación que hagamos.
+que el instrumento $Z$ no tiene perfect compliance. Lo anterior tiene
+dos implicaciones:
+
+i\) en primer lugar que algunos hogares sin acceso a la señal hayan
+reportado ver la la TV de Kuran implica que el tratamiento $D$ definido
+como ver la TV de Kuran puede ser endogeno, toda vez que puede haber
+características no observables como rebeldía, interés entre otros que
+estén correlacionados con el apoyo al régimen y en consecuencia que se
+encuentren en $u_i$ de tal manera que $E[D_iu_i]\neq 0$.
+
+ii\) En segundo lugar, el hecho de que el instrumento $Z$ no tenga
+perfect compliance nos indica que deberíamos reconocer efectos
+heterogéneos, es decir tendríamos que estimar un $LATE$ y no un $ATE$.
+Por último cómo vemos que hay diferencia estadisticamente significativas
+en la proporción de zona urbana para $(Z=1)$ y $(Z =0)$, por lo tanto 
+sabemos que debemos controlar por esta variable en cualquier
+especificación que hagamos.
 
 ## Punto 2
 
@@ -2870,14 +2959,14 @@ un efecto causal? Justifiquen. (Máx. 150 palabras)
 
 **R/:** Aunque de manera ingenua se podría pensar que $\beta$ es el
 efecto causa de ver la TV de Kuran en el apoyo al regimen, este
-estimador no identifica un efecto causal, representa es la diferencia
+estimador no identifica un efecto causal, representa  la diferencia
 promedio en la probabilidad de apoyar al régimen entre quienes ven la TV
 de Kuran $(D_i=1)$ y quiene no $(D_i=0)$ manteniendo constante el vector
 de controles $X_i$. En respuesta a la segunda pregunta **NO**, el
 estimador no recupera el efecto causal dado que el tratamiento $D_i$
 definido como ver la TV de Kuran es endogeno, toda vez que puede haber
 características no observables como rebeldía o interés que estén
-correlacionados con el apoyo al régimen y en consecuencia que se
+correlacionadas con el apoyo al régimen y en consecuencia que se
 encuentren en $u_i$ de tal manera que $E[D_iu_i]\neq 0$.
 
 **Anexo matemático:**
@@ -2958,12 +3047,11 @@ cumplir los siguientes supuestos:
 i)  **Independencia:**\
     $Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i$ en
     nuestro caso, como sabemos que hay diferencias en términos de
-    región, por lo tanto se debe cumplir independencia condicional:\
+    región, por lo tanto se debe cumplir conindependencia condicional:\
     $Y_i(1,0),Y_i(1,1),Y_i(0,1),Y_i(0,0),D_i(1),D_i(0)\perp Z_i | \mathbf{X_i}$.\
     Este supuesto estipula que el instrumento debe ser tan bueno como si
-    fuera aleatorio, es decir, que no debe haber factores no observables
-    que estén correlacionados con el instrumento y que a su vez afecten
-    el resultado. En el caso de Valmoria este supuesto es plausible dado
+    fuera aleatorio respecto de los resultados potenciales y el tratamienton. 
+    En el caso de Valmoria este supuesto es plausible dado
     que el acceso a la señal de Kuran está determinado por la geografía
     y no por características del hogar cuando se condiciona por la
     pertenencia o no a zona urbana.
@@ -2972,13 +3060,11 @@ ii) **Relevancia:** $P(D_i=1|Z_i=1)\neq P(D_i=1|Z_i=0)$ o también se
     puede notar $E[D_i(1) - D_i(0)]\neq 0$, lo que estipula que el
     instrumento debe tener un efecto sobre el tratamiento, es decir, que
     el acceso a la señal de Kuran debe aumentar la probabilidad de ver
-    dicha televisión. En el caso de Valmoria este supuesto es plausible
-    dado que el acceso a la señal de Kuran debería aumentar la
-    probabilidad de ver dicha televisión. De hecho, al revisar nuestra
+    dicha televisión. En el caso de Valmoria este supuesto es plausible. De hecho, al revisar nuestra
     tabla de balance es notorio que cuando $(Z=0)$ un 47% de los hogares
     reporta ver la TV de Kuran, mientras que cuando $(Z=1)$ el 90% de
     los hogares reporta ver dicha televisión, lo que nos da indicios de
-    que el instrumento es relevante.
+    que el instrumento puede ser relevante.
 
 iii) **Exclusión restricción:** $Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)$\
      $\forall D\in(0,1)$, lo que estipula que el resultado solo es un
@@ -2991,7 +3077,7 @@ iii) **Exclusión restricción:** $Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)$\
 
 iv) **Monotonicidad:** $D_i(1)\geq D_i(0)$ $\forall i$ o que
     $D_i(1)\leq D_i(0)$ $\forall i$, lo que estipula que el efecto del
-    instrumento debe tener la misma dirección; no debe haber individuos
+    instrumento debe tener la misma dirección, no debe haber individuos
     que reaccionen de manera contraria al instrumento. Es decir, no debe
     haber individuos que vean la TV de Kuran cuando no tienen acceso a
     la señal y que no la vean cuando sí tienen acceso. En el caso de
@@ -3000,7 +3086,9 @@ iv) **Monotonicidad:** $D_i(1)\geq D_i(0)$ $\forall i$ o que
     debería haber casos en los que el acceso disminuya la probabilidad
     de ver la TV de Kuran.
 
-v)  Para ver los distintos tipos de grupos que pueden surgir según la
+c) 
+
+Para ver los distintos tipos de grupos que pueden surgir según la
     relación entre el instrumento y el tratamiento, podemos partir de la
     definición de los siguientes resultados potenciales:
 
@@ -3019,7 +3107,7 @@ D_i=D_i(0)+\underbrace{[D_i(1)-D_i(0)]}_{\phi_i}Z_i
 $$
 
 Donde $\phi_i$ es el efecto causal individual del instrumento sobre la
-probabilidad de tomar el tratamiento. Entonces, si evaluamos dos
+probabilidad de tomar el tratamiento. Entonces, si evaluamos los
 posibles valores de $D_i(z)$:
 
 De esta manera tenemos los siguientes grupos:
@@ -3067,8 +3155,7 @@ Y_i =
 \underbrace{(\beta_{IV} v_i + u_i)}_{\epsilon_i}
 $$
 
-Si de nuestra forma reducida (llamada así por:) tomamos el coeficiente
-de $Z_i$, tenemos:
+Si de nuestra forma reducida tomamos el coeficiente de $Z_i$, tenemos:
 
 $$
 \delta_1 = \beta_{IV}\pi_1
@@ -3083,8 +3170,7 @@ $$
 Donde $\delta_1$ es el efecto del instrumento sobre el resultado y
 $\pi_1$ es el efecto del instrumento sobre el tratamiento.
 
-Si reemplazamos esto por notación de resultados potenciales, tenemos el
-estimador de Wald:
+La expresión de arriba es equivalente al estimador de Wald **(No incluimos el vector de covariables por facilidad algebraica)**:
 
 $$
 \beta_{IV} = \frac{E[Y_i|Z_i=1] - E[Y_i|Z_i=0]}{E[D_i|Z_i=1]-E[D_i|Z_i=0]}
@@ -3097,8 +3183,8 @@ $$
 \beta_{IV} = \frac{E[Y_i(D_i(1)) - Y_i(D_i(0))]}{E[D_i|Z_i=1]-E[D_i|Z_i=0]}
 $$
 
-Ahora aplicamos Ley de Expectativas Iteradas en el numerador, teniendo
-en cuenta los cuatro grupos que identificamos:
+Ahora aplicamos Ley de Expectativas Iteradas en el numerador teniendo en
+cuenta los cuatro grupos que identificamos:
 
 $$
 \beta_{IV} =
@@ -3183,6 +3269,24 @@ acceso a la señal, es decir, para los compliers.
 
 d)  
 
+-   *ATE* ($\mathbb{E}[Y_i(1) - Y_i(0)]$): efecto promedio en toda la
+    población. Incluye always-takers, never-takers y compliers.
+
+-   *ATT* ($\mathbb{E}[Y_i(1) - Y_i(0) \mid D_i=1]$): efecto promedio
+    de los efectivamente tratados (ven la TV de Kuran). Incluye
+    compliers y always-takers.
+
+-   *LATE* ($\mathbb{E}[Y_i(1) - Y_i(0) \mid D_i(1) > D_i(0)]$):
+    efecto promedio solo para los compliers.
+
+Los tres efectos son iguales cuando el tratamiento es homogéneo (efectos
+iguales para todos los individuos) o cuando no hay always-takers ni
+never-takers (toda la población es complier asumiendo monotonicidad). En
+el caso de Valmoria tenemos el efecto de ver la TV de Kuran sobre el
+apoyo al régimen para los individuos con acceso a la señal que
+efectivamente vieron la TV.
+
+
 ## Punto 4
 
 Estime el efecto de la exposición a la televisión extranjera sobre el
@@ -3217,8 +3321,27 @@ library(fixest)
 library(patchwork)
 library(modelsummary)
 
-Primera_etapa <- feols( D ~ Z + age + educ + female + urban, data = valmoria, cluster =~region)
+# 1. Tu estimación original
+Primera_etapa <- feols(D ~ Z + age + educ + female + urban, data = valmoria, cluster = ~region)
 modelos_primera <- list("Primera Etapa" = Primera_etapa)
+
+# 2. Calcular el Estadístico F del instrumento excluido (Z)
+# fixest calcula el test de Wald teniendo en cuenta la corrección de cluster automáticamente
+test_f <- wald(Primera_etapa, keep = "Z")
+f_value <- round(test_f$stat, 1) 
+
+# Si por alguna razón necesitas el F global del modelo y no solo el de Z, 
+# usarías: f_value <- round(fitstat(Primera_etapa, "f")[[1]]$stat, 1)
+
+# 3. Crear la fila personalizada para inyectar en la tabla
+# modelsummary espera un data.frame donde la primera columna es el nombre y las siguientes son los modelos
+fila_f <- data.frame(
+  term = "Estadístico F (Instrumento Z)",
+  "Primera Etapa" = as.character(f_value),
+  check.names = FALSE
+)
+
+# 4. Mapas de coeficientes y GOF (retiramos "f" de aquí)
 mapa_coeficientes <- c(
   "Z"         = "Acceso Señal de Kuran(Z)",
   "age"       = "Edad",
@@ -3229,14 +3352,15 @@ mapa_coeficientes <- c(
 
 mapa_gof <- list(
   list("raw" = "nobs", "clean" = "Observaciones", "fmt" = 0),
-  list("raw" = "r.squared", "clean" = "R2", "fmt" = 3),
-  list("raw" = "f", "clean" = "Estadístico F", "fmt" = 1) 
+  list("raw" = "r.squared", "clean" = "R2", "fmt" = 3)
 )
 
+# 5. Construir la tabla agregando la fila con add_rows
 modelsummary(
   modelos_primera,
   coef_map = mapa_coeficientes, 
   gof_map = mapa_gof,
+  add_rows = fila_f,          # <--- Inyección del Estadístico F aquí
   fmt = 3,
   stars = c('*' = .1, '**' = .05, '***' = .01),
   title = "Primera Etapa: Efecto de la Señal y Controles sobre Exposición a TV",
@@ -3248,7 +3372,7 @@ modelsummary(
     full_width = FALSE,
     position = "center"
   ) %>%
-  # Ponemos en negrita la fila del instrumento (que ahora es la fila 2, debajo del Intercepto)
+  # Ponemos en negrita la fila del instrumento 
   row_spec(2, bold = TRUE, background = "#f2f2f2") %>% 
   footnote(
     general = "Errores estándar con correción de cluster a nivel región en parentesis",
@@ -3263,9 +3387,9 @@ acceso a la señal de Kuran aumenta la probabilidad de ver dicha
 televisión. La magnitud del coeficiente nos dice que tener acceso a la
 señal de Kuran aumenta en aproximadamente 41.1 puntos porcentuales la
 probabilidad de ver la TV de Kuran, manteniendo constantes la edad, los
-años de educación, el sexo y si la zonas es urbana. Este resultado nos
-sugiere que el instrumento es relevante para explicar la variación en el
-tratamiento $D$.
+años de educación, el sexo y si la zonas es urbana. Adicionalmente, al calcular el F
+correspondiente, se obtiene un valor mayor a 105, por lo que es posible
+decir que comprobamos que el instrumento es relevante.
 
 b)  
 
@@ -3327,29 +3451,364 @@ modelsummary(
 Al contrastar la estimación de MCO con la de 2SLS, observamos que el
 coeficiente de $D$ (ver TV de Kuran) cambia significativamente en
 magnitud y signo. En el modelo MCO, el coeficiente de $D$ negativo y
-estadística mente significativo al 5 indicando que ver la televisión de
+estadística mente significativo al 5%\ indicando que ver la televisión de
 Kuran causa una disminución en el apoyo al regimen de 5.7 puntos
 porcentuales. Sin embargo como vimos en el apartado dos de este punto
 esta estimación esta sesgada debido a la endogeneidad del tratamiento
 $D$.
 
-$$\beta = \beta + \underbrace{\frac{Cov(u_i, \tilde{D_i})}{Var(\tilde{D_i})}}_{\text{Sesgo Endogenidad}}$$
+$$
+\beta = \beta + \underbrace{\frac{Cov(u_i, \tilde{D_i})}{Var(\tilde{D_i})}}_{\text{Sesgo Endogenidad}}
+$$
 Por lo tanto sabemos que $Cov(u_i, \tilde{D_i}) < 0$ por lo tanto
-podemos afirmar que el sesgo de endogenidad es negativo. Esto en el caso
-del ejemplo las personas que se autoseleccionan para ver la TV pueden
+podemos afirmar que el sesgo de endogenidad es negativo. Por ejemplo las personas que se autoseleccionan para ver la TV pueden
 ser personas que por características no observables como rebeldía o
-interés tienen una menor probabilidad de apoyar al régimen, lo que hace
+interés tengan una menor probabilidad de apoyar al régimen, lo que hace
 que el sesgo de endogeneidad sea negativo.
 
 Por su parte la estimación de 2SLS nos muestra un coeficiente positivo y
 estadísticamente significativo al 1%, indicando que el efecto causal de
 ver la TV de Kuran en el apoyo al régimen es positivo, es decir, que ver
 la TV de Kuran aumenta el apoyo al régimen en aproximadamente 24.4
-puntos porcentuales para los compliers.Entonces Concluimos que, aislando
+puntos porcentuales para los compliers.Entonces concluimos que, aislando
 el sesgo, la televisión no socava al gobierno, por el contrario y de
 manera contraintutiva, para el subgrupo de los compliers incrementa la
 probabilidad de apoyar al régimen en 24.4 puntos porcentuales.
 
 La diferencia entre ambos estimadores se explica por el sesgo de
-endogeneidad presente en el modelo MCO, que subestima el efecto real del
-tratamiento $D$ sobre el resultado $Y$.
+endogeneidad presente en el modelo MCO.
+
+## Punto 5
+
+Finalmente, ustedes discuten cómo operacionalizar el efecto de interés y
+qué limitaciones tiene el enfoque de variables instrumentales cuando el
+tratamiento no es estrictamente binario.
+
+a.  Planteen el estimador de Wald en su versión poblacional para el caso
+    binario. También, expliquen qué mide el numerador, qué mide el
+    denominador.
+b.  Supongan ahora que el tratamiento original es multivaluado (por
+    ejemplo, el número de horas de TV extranjera vistas por semana,
+    $W_i$), y que el investigador decide **binarizarlo** a partir de un
+    umbral $j^*$, de modo que $D_i = 1\{W_i \geq j^*\}$. A la luz de
+    [Eckhof & Huber
+    (2018)](https://ideas.repec.org/p/fri/fribow/fribow00492.html),
+    discutan por qué el estimador de Wald aplicado sobre $D_i$ puede
+    violar la restricción de exclusión del instrumento. Expliquen en qué
+    condiciones especiales sí sería válido y qué tipo de tests podrían
+    implementarse para evaluar dichas condiciones. Reflexionen sobre los
+    problemas que pueden surgir de la binarización de las variables para
+    el contexto del estimador LATE.
+
+**R/:**
+
+Recordemos el estimador $\beta_{IV}$ que obtvimos en el numeral en el
+punto tres de este ejercicio:
+
+$$
+\beta_{IV}=\frac{\delta_1}{\pi_1} 
+$$ Veamos ahora formalmente entonces que son $\delta$ y $\pi_1$:
+
+En primer lugar recordemos nuestra regresión de la forma reducida o
+$ITT$:
+
+$$
+Y_i = \delta_0+\delta_1Z_i + \rho' X_i + \eta_i
+$$
+
+si tomamos el valor esperado condicionado a $Z_i=1$ y $X_i$ tenemos:
+
+$$
+E[Y_i|Z_i, X_i] = \delta_0 + \delta_1 + \rho' X_i
+$$ si tomamos el valor esperado condicionado a $Z_i=0$ y $X_i$ tenemos:
+
+$$
+E[Y_i|Z_i, X_i] = \delta_0 + \rho' X_i
+$$ Entonces, si restamos ambos tenemos: $$
+E[Y_i|Z_i=1, X_i] - E[Y_i|Z_i=0, X_i] = \delta_1
+$$ Por lo tanto, $\delta_1$ mide el efecto del instrumento sobre el
+resultado, es decir, el efecto de tener acceso a la señal de Kuran sobre
+el apoyo al régimen.
+
+Ahora veamos de la primera etapa:
+
+$$
+D_i = \pi_o+ \pi_1 Z_i + \mathbf{X_i}' \theta+ v_i
+$$
+
+Si tomamos el valor esperado condicionado a $Z_i=1$ y $X_i$ tenemos: $$
+E[D_i|Z_i, X_i] = \pi_o + \pi_1 + \mathbf{X_i}' \theta
+$$
+
+Si tomamos el valor esperado condicionado a $Z_i=0$ y $X_i$ tenemos:
+
+$$
+E[D_i|Z_i=0, X_i] = \pi_o + \mathbf{X_i}' \theta
+$$ si restamos ambos tenemos: $$
+E[D_i|Z_i=1, X_i] - E[D_i|Z_i=0, X_i] = \pi_1
+$$
+
+Por lo tanto, $\pi_1$ mide el efecto del instrumento sobre el
+tratamiento, es decir, el efecto de tener acceso a la señal de Kuran
+sobre la probabilidad de ver dicha televisión.
+
+Entonces sabemos que nuestro estimador de Wald poblacional en este caso
+es:
+
+$$
+\beta_{IV} = \frac{\delta_1}{\pi_1}=\frac{E[Y_i|Z_i=1, X_i] - E[Y_i|Z_i=0, X_i]}{E[D_i|Z_i=1, X_i] - E[D_i|Z_i=0, X_i]}
+$$ Como se menciono anterioremnte el numerador
+$$E[Y_i|Z_i=1, X_i] - E[Y_i|Z_i=0, X_i]$$ mide el efecto del instrumento
+sobre el resultado manteniendo constante el vector de covariables, es
+decir, el efecto de tener acceso a la señal de Kuran sobre el apoyo al
+régimen.Por su parte $$E[D_i|Z_i=1, X_i] - E[D_i|Z_i=0, X_i]$$ mide el
+efecto del instrumento sobre el tratamiento manteniendo constante el
+vector de covariables, es decir, el efecto de tener acceso a la señal de
+Kuran sobre la probabilidad de ver la TV en Kuran.
+
+b)  
+
+Para responder este numeral ptimero recordemos nuestro supuesto de
+restricción exclusión. Este supuesto nos dice que
+$Y_i(D_i,0)=Y_i(D_i,1) = Y_i(D)$ $\forall D\in(0,1)$, lo que estipula
+que el resultado solo es un resultado de $D$, es decir, que el
+instrumento $Z$ solo afecta el resultado a través del tratamiento, lo
+que también puede ser visto como $E[Z_i\eta_i]=0$.
+
+Ahora para ver como se viola la restricción exclusión tengamos en cuenta
+que si se binarisa el tratamiento a partir de un umbral $j^*$, de modo
+que $D_i = 1\{W_i \geq j^*\}$, entonces el instrumento $Z$ podría
+afectar el resultado $Y$ a través de cambios en $W_i$ que no se reflejen
+en $D_i$.
+
+Por ejemplo, si el instrumento aumenta el número de horas de TV
+extranjera vistas por semana pero no necesariamente hace que más
+personas crucen el umbral pj $j^*=5\text{horas}$, entonces el
+instrumento podría tener un efecto directo sobre el resultado a través
+de $W_i$, violando la restricción de exclusión.
+
+Para verlo entonces supongamos que $D_i^* = 1\{W_i \geq j^*\}$, de tal
+forma que nuestro estimador de Wald (Sin controles para facilitar la
+notación)sería:
+
+$$
+\beta_{IV} = \frac{E[Y_i|Z_i=1] - E[Y_i|Z_i=0]}{E[D_i^*|Z_i=1] - E[D_i^*|Z_i=0]}
+$$ Vamos a definir $Y_iw_1$ como el resultado potencial del apoyo al
+régimen cuando $W_i$ es el número de horas de TV de Kuran vistas cuando
+$Z_i=1$ y $Y_iw_0$ como el resultado potencial en el apoyo al régimen
+cuando $W_i$ es el número de horas de TV extranjera vistas por semana
+cuando $Z_i=0$. De tal forma:
+
+$$
+\beta_{IV} = \frac{E[Y_iw_1|Z_i=1] - E[Y_iw_0|Z_i=0]}{E[D_i^*|Z_i=1] - E[D_i^*|Z_i=0]}
+$$ Entonces aplicando $Y_iw,W_i \perp Z$ y ley de esperanzas totales
+sabiendo que por monotonicidad solo habrá compliers, tenemos que:
+
+$$
+\beta_{IV} =
+\frac{
+  \begin{aligned}
+    &\underbrace{
+      E\big[Y_{iW_1} - Y_{iW_0} \mid W_1 \geq j^* > W_0\big]
+      \cdot
+      \Pr\big(W_1 \geq j^* > W_0\big)
+    }_{\text{Compliers que cruzan umbral}} \\
+    &+ \underbrace{
+      E\big[Y_{iW_1} - Y_{iW_0} \mid W_1 > W_0,\; \mathbf{1}\{W_1 \geq j^* > W_0\} = 0\big]
+      \cdot
+      \Pr\big(W_1 > W_0,\; \mathbf{1}\{W_1 \geq j^* > W_0\} = 0\big)
+    }_{\text{Compliers off-threshold}}
+  \end{aligned}
+}{
+  \underbrace{\Pr\big(W_1 \geq j^* > W_0\big)}_{\text{Prob Compliers que Cruzan umbral}}
+}
+$$ Como se nota en la ecuación de arriba, el estimador de Wald aplicado
+sobre $D_i^*$ no solo captura el efecto de los compliers que cruzan el
+umbral, sino que también captura el efecto de los compliers
+off-threshold, o sea aquellos individuos que aumentan su consumo de TV
+por el instrumento pero que no cruzan el umbral $j^*$, que podemos
+suponer de nuevo que es 5 horas. Esto viola la restricción de exclusión
+del instrumento porque el instrumento está afectando el resultado a
+través de cambios en $W_i$ que no se reflejan en $D_i$. En ese caso, el
+estimador no nos esta dando el LATE porque estamos incluyendo en el
+numerador el efecto que tiene el instrumento en compliers que no son
+definidos como tratados. 
+
+En resumen la violación se da cuando se cumplen al tiempo dos condiciones
+planteadas en el paper:
+
+1)  El instrumento $Z_i$ afecta el tratamiento multivaluado $W_i$ dentro
+    de los intervalos de soporte por debajo y/o por encima del umbral
+    $j^*$. O sea, existen individuos cuya exposición a la TV cambia con
+    el acceso a la señal, pero sin cruzar el umbral de binarización. Por
+    ejemplo, hogares que pasan de ver 0 a 2 horas semanales (ambas por
+    debajo de un umbral definido en $j^* = 5$) en respuesta al acceso a
+    la señal.
+
+2)  Estos cambios inducidos por el instrumento en $W_i$ dentro de los
+    intervalos de soporte afectan el resultado del apoyo al régimen
+    $Y_i$. Si ver más horas de TV en Kuran(aunque el individuo vea
+    menos de las definidas por $j^*$) afecta el apoyo al régimen,
+    entonces el instrumento afecta $Y_i$ a través de un canal 
+    adicional a  $D_i$, violando la restricción de exclusión para el
+    tratamiento binarizado.
+
+Así mismo si miramos el denomindaor notamos que
+solo toma la probabilidad de los compliers que cruzan el umbral, no de
+aquellos que no lo cruzan por lo que tenemos un numerador inflado y un
+denominador reducido que no reconoce los otros compliers, lo que hace
+que el estimador de Wald no nos recupere el efecto causal de interés.
+
+Respondiendo a las condiciones en las que sería valido, de acuerdo con
+el paper podemos señalar:
+
+i)  Cuando el efecto promedio de los compliers es nulo, es decir: 
+$$
+    E\big[Y_{iw_1} - Y_{iw_0} \mid W_1 > W_0,\; \mathbf{1}\{W_1 \geq j^* > W_0\} = 0\big]=0
+    $$ 
+En Valmoria, esto requeriría que ver pocas horas de TV
+de Kuran (sin llegar al umbral) no tenga efecto alguno sobre el apoyo al régimen, lo cual es difícil
+de defender si la TV tiene cualquier efecto marginal.
+
+**El autor no menciona ningún tests para este caso.**
+
+ii) Cuando no existen compliers off-threshold, es decir, cuando el
+    instrumento solo afecta a aquellos individuos que cruzan el umbral
+    $j^*$. Lo que en el paper se formaliza cómo: 
+    $$
+    Pr (W_1 > W_0 \geq j^*) = Pr (j^* > W_1 > W_0) = 0
+    $$
+
+Es decir la probabilidad de que halla gente que aumenta su consumo de TV
+pero que ya estaban por encima del umbral es cero y la probabilidad de
+que halla gente que aumenta su consumo de TV pero queda debajo del
+umbral es cero.
+
+En Valmoria, esto requeriría que el acceso a la señal solo induzca a individuos a pasar de no ver nada a ver al menos $j^*$ horas, sin efectos intermedios, lo cual también es muy deifícil de defender.
+
+Este supuesto es el que se puede probar con el siguiente test:
+
+En primer lugar proponen estimar la primera etapa del instrumento sobre
+la probabilidad de alcanzar al menos de cada nivel $j^*$ del tratamiento
+continuo original $W_i$ dicho coeficiente lo denomina $\beta_j$:
+
+$$
+\beta_j=Pr(W_i \geq j|Z_i=1) - Pr(W_i \geq j|Z_i=0)
+$$ 
+Lo que busca corroborar es, si es cierto que todos los compliers
+saltan de abajo del umbral hacia arriba, o sea que no hay compliers
+debajo del umbral es decir la proporcion de afectados por el instrumento
+debe crecer a medida que nos acercamos al umbral por la izquierda y
+alcanzar su punto maximo en el umbral $j^*$ y luego empezar a decrecer
+por la derecha. Para ello se evalúa la siguiente hipótesis nula:
+
+$$
+H_0:
+\begin{cases}
+\beta_{j+1} - \beta_j \geq 0 & \text{para todo } j < j^* \\
+\beta_j - \beta_{j+1} \geq 0 & \text{para todo } j \geq j^*
+\end{cases}
+$$ 
+Ademas proponen verificar: 
+
+1. *F-test:* $\beta_j = 0$ para todo $j \neq j^*$, es decir, todos
+    los compliers están exactamente en el umbral. Se implementa con un
+    F-test estándar.
+
+2.*Validez del instrumento:* $\beta_j = \beta_{j+1} \quad \forall \quad j$, lo que implica que
+    todos los compliers se mueven de los valores mínimos a los máximos
+    del soporte.
+
+La binarización introduce una trade-off: mejora la interpretabilidad
+del parámetro estimado (el efecto de cruzar un umbral relevante
+teóricamente), pero con el costo de probablemente violar los supuestos
+que garantizan la identificación. En el contexto de Valmoria se debería:
+
+-   Reportar los $\beta_j$ para todos los niveles de exposición y
+    verificar si el instrumento afecta $W_i$ solo alrededor del umbral
+    elegido.
+-   Implementar los tests de los autores para evaluar si existen
+    compliers fuera del umbral.
+-   Si los tests rechazan los supuestos, considerar usar el tratamiento
+    continuo $W_i$ directamente en la estimación IV, o continuar con la
+    definición anterior de $D_i = 1\{W_i > 0 \}$ (si el hogar
+    efectivamente veía la TV de Kuran).
+
+## Punto 6 
+
+Tiempo después, surge nueva evidencia. Investigadores encuentran que
+algunos hogares en regiones con acceso a señal, aunque podían captar la
+televisión de Kuran, decidieron no verla por temor a sanciones sociales
+o políticas.
+
+a)	¿Cómo afectan estos hallazgos la validez de los supuestos?
+b)	¿Qué implicaciones tendría para la interpretación del estimador IV en este contexto?
+c)	Discutan si este tipo de evidencia invalida por completo la estrategia o si aún se podría recuperar un efecto local interpretable.
+
+**R/:**
+
+a)
+
+La nueva evidencia señala que algunos hogares en regiones con acceso
+técnico a la señal ($Z_i = 1$) decidieron no ver ($D_i = 0$) la TV de
+Kuran por temor a sanciones sociales o políticas. Esto tiene
+implicaciones directas para los supuestos de la estrategia IV:
+
+*Monotonicidad:* El supuesto requiere que el acceso a la señal nunca
+reduzca la probabilidad de ver la TV de Kuran. La evidencia de no ver
+por miedo en regiones con señal no viola directamente el supuesto. Sin
+embargo, si el miedo a sanciones es mayor en regiones con señal,
+probablemente porque el régimen concentra su vigilancia en esos hogares,
+podría crear una correlación negativa entre $Z_i$ y $D_i$ para algunos
+individuos, amenazando el supuesto.
+
+*Restricción de exclusión:* Si el miedo a sanciones es mayor en
+regiones con acceso a la señal porque el régimen controla más
+intensamente esas regiones, entonces $Z_i$ afecta el apoyo al régimen no
+solo a través de la exposición a la TV ($D_i$), sino también
+directamente a través del efecto que esto tiene sobre miedo y represión.
+Esto violaría la restricción de exclusión:
+$Y_i(D,1) \neq Y_i(D,0) \neq Y_i(D)$.
+
+
+b) 
+
+Si la restricción de exclusión se viola por este canal, el estimador
+2SLS ya no identifica el LATE de ver la TV de Kuran. Recupera
+la mezcla del efecto de la exposición a la TV regional con el
+efecto del control político y/o represión en regiones con señal. Esto
+puede implicar que: i) Si las regiones con señal tienen mayor control y
+esto reduce el apoyo al régimen (porque los individuos perciben más
+represión y se vuelven en contra), el estimador IV tendría un sesgo
+negativo sobre el apoyo. ii) Si este control hace que los individuos
+expresen mayor apoyo al régimen por miedo, el estimador IV podría tener
+un sesgo positivo.
+
+Los hogares que tienen acceso pero no ven la TV por miedo a sanciones
+son never-takers que no afectan el estimando LATE directamente, pero su
+presencia debilita la primera etapa. Sin embargo, como vimos, aunque hay
+algunos hogares que no veían la TV regional aún teniendo señal, el
+instrumento resultó relevante.
+
+c) 
+
+La evidencia no invalida completamente la estrategia, pero la debilita
+en caso de que se violen los supuestos. Hay algunas posibles soluciones
+para "descontaminar" el LATE:
+
+*Controlar por presencia del régimen y control:* Si se dispone de datos sobre
+la intensidad de la presencia o vigilancia del régimen a nivel regional o casos de represión,
+incluirlos como control adicional puede aislar el efecto de la TV del
+efecto directo del clima de represión y control político.
+
+*Restringir la muestra:* Si se pueden identificar subgrupos de hogares donde
+el miedo a sanciones es más bajo (probablemente, esto pase en regiones más alejadas de
+los centros de vigilancia del régimen y de vías principales), la estrategia IV podría ser más
+válida en esa submuestra, recuperando un LATE local con mayor validez
+interna aunque menor alcance para una extrapolación a contextos diferentes.
+
+La nueva evidencia hace que la interpretación de los resultados se tenga que
+hacer con cuidado, pues el efecto estimado mezcla el impacto de la TV
+regional con el impacto del control político en regiones con acceso a la
+señal. Sin embargo, añadiendo controles o limitando la muestra, el
+posible encontrar un LATE válido.
